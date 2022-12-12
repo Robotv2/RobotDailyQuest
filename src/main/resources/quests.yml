@@ -1,0 +1,67 @@
+quests:
+  1:
+    name: "&aStone"
+    menu_item: STONE
+    description:
+      - "&bMine 32 stones."
+      - "&bWin &c500$&b."
+    quest_type: BREAK
+    required_targets:
+      - STONE
+    required_amount: 32
+    quest_reset_delay: DAILY
+  3:
+    name: "Too many zombies"
+    menu_item: ZOMBIE_HEAD
+    description:
+      - "&cKill &65 &czombies."
+      - "&aWin &b500 &aTokens."
+    quest_type: KILL
+    required_targets:
+      - ZOMBIE
+    required_amount: 5
+    quest_reset_delay: DAILY
+  4:
+    name: "Best friend"
+    menu_item: LEAD
+    description:
+      - "&aTame a wolf."
+      - "&aWin &b500 &a$."
+    quest_type: TAME
+    required_targets:
+      - WOLF
+    required_amount: 1
+    quest_reset_delay: DAILY
+  5:
+    name: "More sheeps !"
+    menu_item: WHITE_WOOL
+    description:
+      - "&eBreed two sheeps."
+      - "&aWin &b5 000 &a$."
+    quest_type: BREED
+    required_targets:
+      - SHEEP
+    required_amount: 2
+    quest_reset_delay: DAILY
+  6:
+    name: "Mushrooms..."
+    menu_item: RED_MUSHROOM
+    description:
+      - "&eShear a mooshroom."
+      - "&aWin &b500 points of EXP&a."
+    quest_type: SHEAR
+    required_targets:
+      - MUSHROOM_COW
+    required_amount: 1
+    quest_reset_delay: DAILY
+  9:
+    name: "&aMiiiiilk."
+    menu_item: MILK_BUCKET
+    description:
+      - "&bGet 2 milk buckets."
+      - "&bWin &c5 000 000$&b."
+    quest_type: MILKING
+    required_targets:
+      - COW
+    required_amount: 2
+    quest_reset_delay: DAILY

@@ -1,0 +1,5 @@
+name: RobotDailyQuests
+version: '${project.version}'
+main: fr.robotv2.robotdailyquests.RobotDailyQuest
+api-version: 1.19
+authors: [ Robotv2 ]
