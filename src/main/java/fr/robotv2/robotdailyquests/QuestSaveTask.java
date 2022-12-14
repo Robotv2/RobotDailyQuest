@@ -1,6 +1,6 @@
 package fr.robotv2.robotdailyquests;
 
-import fr.robotv2.robotdailyquests.data.impl.LoadedQuest;
+import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -17,7 +17,7 @@ public class QuestSaveTask extends BukkitRunnable {
     public void run() {
 
         //Saving loaded quest.
-        final List<LoadedQuest> quests = instance.getQuestManager().getLoadedQuests();
+        final List<ActiveQuest> quests = instance.getQuestManager().getActiveQuests();
         quests.forEach(instance.getDatabaseManager()::saveLoadedQuest);
 
         //Saving player data.

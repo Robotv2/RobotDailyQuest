@@ -1,7 +1,7 @@
 package fr.robotv2.robotdailyquests.data;
 
 import com.j256.ormlite.support.ConnectionSource;
-import fr.robotv2.robotdailyquests.data.impl.LoadedQuest;
+import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.data.impl.PlayerQuestData;
 
 import java.sql.SQLException;
@@ -11,12 +11,12 @@ public class QuestDatabaseManager {
 
     private final ConnectionSource source;
     private final OrmData<PlayerQuestData, UUID> playerQuestData = new OrmData<>();
-    private final OrmData<LoadedQuest, String> loadedQuest = new OrmData<>();
+    private final OrmData<ActiveQuest, String> loadedQuest = new OrmData<>();
 
     public QuestDatabaseManager(ConnectionSource source) throws SQLException {
         this.source = source;
         this.playerQuestData.initialize(source, PlayerQuestData.class);
-        this.loadedQuest.initialize(source, LoadedQuest.class);
+        this.loadedQuest.initialize(source, ActiveQuest.class);
     }
 
     public void close() {
@@ -27,7 +27,7 @@ public class QuestDatabaseManager {
         return this.playerQuestData;
     }
 
-    public OrmData<LoadedQuest, String> getLoadedQuest() {
+    public OrmData<ActiveQuest, String> getLoadedQuest() {
         return loadedQuest;
     }
 
@@ -37,7 +37,7 @@ public class QuestDatabaseManager {
         this.getPlayerQuestData().save(data);
     }
 
-    public void saveLoadedQuest(LoadedQuest loadedQuest) {
-        this.getLoadedQuest().save(loadedQuest);
+    public void saveLoadedQuest(ActiveQuest activeQuest) {
+        this.getLoadedQuest().save(activeQuest);
     }
 }

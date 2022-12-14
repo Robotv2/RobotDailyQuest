@@ -1,6 +1,6 @@
 package fr.robotv2.robotdailyquests.events;
 
-import fr.robotv2.robotdailyquests.data.impl.LoadedQuest;
+import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -9,12 +9,12 @@ public class QuestEvent extends Event {
 
     private final static HandlerList HANDLER_LIST = new HandlerList();
 
-    private final LoadedQuest quest;
-    public QuestEvent(@NotNull LoadedQuest quest) {
+    private final ActiveQuest quest;
+    public QuestEvent(@NotNull ActiveQuest quest) {
         this.quest = quest;
     }
 
-    public LoadedQuest getQuest() {
+    public ActiveQuest getQuest() {
         return quest;
     }
 

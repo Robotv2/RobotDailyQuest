@@ -1,29 +1,28 @@
 package fr.robotv2.robotdailyquests.ui;
 
-import com.google.common.collect.Iterators;
-import dev.triumphteam.gui.builder.gui.SimpleBuilder;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
-import dev.triumphteam.gui.components.GuiType;
-import dev.triumphteam.gui.guis.Gui;
-import dev.triumphteam.gui.guis.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
+import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
+import com.github.stefvanschie.inventoryframework.pane.Pane;
+import com.github.stefvanschie.inventoryframework.pane.PatternPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
-import fr.robotv2.robotdailyquests.data.impl.LoadedQuest;
+import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.quest.Quest;
-import net.kyori.adventure.text.Component;
+import fr.robotv2.robotdailyquests.util.ColorUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.Iterator;
+import java.util.List;
 
 public class GuiHandler {
 
     private final RobotDailyQuest instance;
-    private final GuiItem filler = ItemBuilder
-            .from(Material.BLACK_STAINED_GLASS_PANE)
-            .name(Component.text(" "))
-            .flags(ItemFlag.HIDE_ATTRIBUTES).asGuiItem();
+
+    private final ItemStack FILLER = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
 
     public GuiHandler(RobotDailyQuest instance) {
         this.instance = instance;
@@ -31,42 +30,38 @@ public class GuiHandler {
 
     public void openBasicQuestGui(Player player, QuestResetDelay delay) {
 
-        final SimpleBuilder builder = Gui.gui(GuiType.CHEST);
-        final int row = 9 * 6;
+        final ChestGui gui =  new ChestGui(6, ColorUtil.color("&7Quest &8- &e"  + delay.name().toLowerCase()));
+        gui.setOnGlobalClick(event -> event.setCancelled(true));
 
-        builder.title(Component.text("Quest >> " + delay));
-        builder.rows(9 * 6);
-        builder.disableAllInteractions();
+        final Pattern pattern = new Pattern(
+                "111111111",
+                "100000001",
+                "100000001",
+                "100000001",
+                "100000001",
+                "111111111"
+        );
+        final PatternPane fill = new PatternPane(0 ,0 , 9, 6, pattern);;
+        fill.bindItem('1', new GuiItem(FILLER));
+        gui.addPane(fill);
 
-        final Gui gui = builder.create();
-        gui.getFiller().fillBorder(filler);
+        final OutlinePane items = new OutlinePane(1, 1, 7, 4, Pane.Priority.HIGH);
+        final List<ActiveQuest> quests = instance.getQuestManager().getActiveQuests(delay);
 
-        final Iterator<LoadedQuest> quests = instance.getQuestManager().getLoadedQuests(delay).iterator();
+        for(ActiveQuest activeQuest : quests) {
 
-        for(int i = 0; i < row; i++) {
-
-            final GuiItem item = gui.getGuiItem(i);
-
-            if(item != null) {
-                continue;
-            }
-
-            if(!quests.hasNext()) {
-                break;
-            }
-
-            final LoadedQuest loadedQuest = quests.next();
-            final Quest quest = loadedQuest.getQuest();
+            final Quest quest = activeQuest.getQuest();
 
             if(quest == null) {
                 continue;
             }
 
-            final int progress = loadedQuest.getCurrentProgress(player.getUniqueId());
-            gui.setItem(i, ItemBuilder.from(quest.getGuiItem(progress)).asGuiItem());
+            final int progress = activeQuest.getCurrentProgress(player.getUniqueId());
+            items.addItem(new GuiItem(quest.getGuiItem(progress)));
         }
 
-        gui.open(player);
+        gui.addPane(items);
+        gui.show(player);
     }
 
 }

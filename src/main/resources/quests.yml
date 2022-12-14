@@ -9,7 +9,7 @@ quests:
     required_targets:
       - STONE
     required_amount: 32
-    quest_reset_delay: DAILY
+    quest_reset_delayt: DAILY
   3:
     name: "Too many zombies"
     menu_item: ZOMBIE_HEAD

@@ -5,12 +5,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import fr.robotv2.robotdailyquests.quest.Quest;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @DatabaseTable(tableName = "robot_quest_player_data")
 public class PlayerQuestData {

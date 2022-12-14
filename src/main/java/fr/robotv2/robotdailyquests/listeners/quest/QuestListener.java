@@ -1,7 +1,7 @@
 package fr.robotv2.robotdailyquests.listeners.quest;
 
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
-import fr.robotv2.robotdailyquests.data.impl.LoadedQuest;
+import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.events.QuestDoneEvent;
 import fr.robotv2.robotdailyquests.events.QuestIncrementEvent;
 import fr.robotv2.robotdailyquests.quest.Quest;
@@ -23,8 +23,8 @@ public class QuestListener implements Listener {
     public void onQuestDone(QuestDoneEvent event) {
 
         final Player player = event.getPlayer();
-        final LoadedQuest loadedQuest = event.getQuest();
-        final Quest quest = loadedQuest.getQuest();
+        final ActiveQuest activeQuest = event.getQuest();
+        final Quest quest = activeQuest.getQuest();
 
         if(quest == null) {
             return;
@@ -37,8 +37,8 @@ public class QuestListener implements Listener {
     public void onQuestIncrement(QuestIncrementEvent event) {
 
         final Player player = event.getPlayer();
-        final LoadedQuest loadedQuest = event.getQuest();
-        final Quest quest = loadedQuest.getQuest();
+        final ActiveQuest activeQuest = event.getQuest();
+        final Quest quest = activeQuest.getQuest();
 
         if(quest == null) {
             return;

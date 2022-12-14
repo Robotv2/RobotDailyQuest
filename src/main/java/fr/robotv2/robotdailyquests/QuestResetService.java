@@ -1,7 +1,7 @@
 package fr.robotv2.robotdailyquests;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
-import fr.robotv2.robotdailyquests.data.impl.LoadedQuest;
+import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 
 import java.sql.SQLException;
@@ -29,7 +29,7 @@ public class QuestResetService {
         return () -> {
 
             try {
-                final DeleteBuilder<LoadedQuest, String> builder = instance.getDatabaseManager().getLoadedQuest().getDao().deleteBuilder();
+                final DeleteBuilder<ActiveQuest, String> builder = instance.getDatabaseManager().getLoadedQuest().getDao().deleteBuilder();
                 builder.setWhere(builder.where().eq("quest-delay-type", delay));
                 builder.delete();
             } catch (SQLException e) {
@@ -38,7 +38,7 @@ public class QuestResetService {
             }
 
             final int max = instance.getConfig().getInt("max-quests." + delay.name().toLowerCase());
-            instance.getQuestManager().removeLoadedQuest(delay);
+            instance.getQuestManager().removeActiveQuest(delay);
             instance.getQuestManager().fillLoadedQuest(delay, max);
 
             instance.getSaveTask().run();

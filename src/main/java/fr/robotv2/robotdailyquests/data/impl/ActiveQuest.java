@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 @DatabaseTable(tableName = "robot_quest_loaded")
-public class LoadedQuest {
+public class ActiveQuest {
 
     @DatabaseField(columnName = "player-done", dataType = DataType.SERIALIZABLE)
     private final ArrayList<UUID> playerDone = new ArrayList<>();
@@ -35,9 +35,9 @@ public class LoadedQuest {
     @DatabaseField(columnName = "quest-delay-type")
     private QuestResetDelay delay;
 
-    public LoadedQuest() { }
+    public ActiveQuest() { }
 
-    public LoadedQuest(Quest quest, long startTimeStamp) {
+    public ActiveQuest(Quest quest, long startTimeStamp) {
         this.questId = quest.getId();
         this.delay = quest.getDelay();
         this.startTimeStamp = startTimeStamp;
@@ -111,11 +111,11 @@ public class LoadedQuest {
     @Override
     public boolean equals(Object object) {
 
-        if(!(object instanceof LoadedQuest loadedQuest)) {
+        if(!(object instanceof ActiveQuest activeQuest)) {
             return false;
         }
 
-        return loadedQuest.questId.equals(this.questId) &&
-                loadedQuest.startTimeStamp == this.startTimeStamp;
+        return activeQuest.questId.equals(this.questId) &&
+                activeQuest.startTimeStamp == this.startTimeStamp;
     }
 }

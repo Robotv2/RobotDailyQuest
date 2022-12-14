@@ -1,7 +1,7 @@
 package fr.robotv2.robotdailyquests.listeners;
 
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
-import fr.robotv2.robotdailyquests.data.impl.LoadedQuest;
+import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.enums.QuestType;
 import fr.robotv2.robotdailyquests.quest.Quest;
 import org.bukkit.entity.Player;
@@ -26,15 +26,15 @@ public abstract class QuestProgressionEnhancer implements Listener {
 
     public void increaseProgression(Player player, QuestType type, String target, int amount) {
 
-        final List<LoadedQuest> quests = instance.getQuestManager().getLoadedQuests();
+        final List<ActiveQuest> quests = instance.getQuestManager().getActiveQuests();
 
-        for (LoadedQuest loadedQuest : quests) {
+        for (ActiveQuest activeQuest : quests) {
 
-            if(loadedQuest.hasBeenDone(player.getUniqueId()) || loadedQuest.hasEnded()) {
+            if(activeQuest.hasBeenDone(player.getUniqueId()) || activeQuest.hasEnded()) {
                 return;
             }
 
-            final Quest quest = loadedQuest.getQuest();
+            final Quest quest = activeQuest.getQuest();
 
             if (quest == null // Quest doesn't exist ?? (shouldn't happen)
                     || quest.getType() != type // Quest type doesn't match. (another action)
@@ -43,7 +43,7 @@ public abstract class QuestProgressionEnhancer implements Listener {
                 continue;
             }
 
-            loadedQuest.incrementCurrentProgress(player, amount);
+            activeQuest.incrementCurrentProgress(player, amount);
         }
     }
 }

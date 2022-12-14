@@ -1,6 +1,6 @@
 package fr.robotv2.robotdailyquests.events;
 
-import fr.robotv2.robotdailyquests.data.impl.LoadedQuest;
+import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.quest.Quest;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -10,8 +10,8 @@ public class QuestIncrementEvent extends QuestEvent {
     private final Player player;
     private final int amount;
 
-    public QuestIncrementEvent(@NotNull Player player, @NotNull LoadedQuest loadedQuest, int amount) {
-        super(loadedQuest);
+    public QuestIncrementEvent(@NotNull Player player, @NotNull ActiveQuest activeQuest, int amount) {
+        super(activeQuest);
         this.player = player;
         this.amount = amount;
     }

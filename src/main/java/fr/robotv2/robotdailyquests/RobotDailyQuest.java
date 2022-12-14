@@ -4,9 +4,11 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import fr.robotv2.robotdailyquests.data.PlayerDataInitializer;
 import fr.robotv2.robotdailyquests.data.QuestDatabaseManager;
-import fr.robotv2.robotdailyquests.data.impl.LoadedQuest;
+import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
+import fr.robotv2.robotdailyquests.dependencies.VaultAPI;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.file.ConfigFile;
+import fr.robotv2.robotdailyquests.importer.QuestImporterManager;
 import fr.robotv2.robotdailyquests.listeners.GlitchChecker;
 import fr.robotv2.robotdailyquests.listeners.block.BlockBreakListener;
 import fr.robotv2.robotdailyquests.listeners.block.BlockPlaceListener;
@@ -33,6 +35,7 @@ public final class RobotDailyQuest extends JavaPlugin {
     private QuestResetService service;
     private GlitchChecker glitchChecker;
     private QuestSaveTask saveTask;
+    private QuestImporterManager questImporterManager;
 
     private GuiHandler guiHandler;
 
@@ -65,12 +68,18 @@ public final class RobotDailyQuest extends JavaPlugin {
         for (QuestResetDelay delay : QuestResetDelay.VALUES) {
 
             this.getResetService().scheduleNextReset(delay);
-            final List<LoadedQuest> loadedQuests = this.getQuestManager().getLoadedQuests(delay);
+            final List<ActiveQuest> activeQuests = this.getQuestManager().getActiveQuests(delay);
 
-            if(loadedQuests.isEmpty() || loadedQuests.get(0).hasEnded()) {
+            if(activeQuests.isEmpty() || activeQuests.get(0).hasEnded()) {
                 this.getResetService().getResetRunnable(delay, false).run();
             }
         }
+
+        if(VaultAPI.initialize(this)) {
+            getLogger().info("Hook to Vault !");
+        }
+
+        this.questImporterManager = new QuestImporterManager(this);
     }
 
     @Override
@@ -117,6 +126,10 @@ public final class RobotDailyQuest extends JavaPlugin {
         return this.questFile;
     }
 
+    public QuestImporterManager getQuestImporterManager() {
+        return this.questImporterManager;
+    }
+
     // <- LOADERS ->
 
     private void loadQuests() {
@@ -131,7 +144,13 @@ public final class RobotDailyQuest extends JavaPlugin {
                 continue;
             }
 
-            this.getQuestManager().cacheQuest(new Quest(questSection));
+            try {
+                final Quest quest = new Quest(questSection);
+                this.getQuestManager().cacheQuest(quest);
+            } catch (Exception exception) {
+                getLogger().warning("An error occurred while loading quest: " + key);
+                getLogger().warning("Error message: " + exception.getMessage());
+            }
         }
     }
 
