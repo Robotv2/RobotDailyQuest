@@ -28,10 +28,10 @@ public class ConfigFile {
     public void setup() {
 
         if(file == null) {
-            this.file = new File(plugin.getDataFolder(), fileName + ".yml");
+            this.file = new File(plugin.getDataFolder(), fileName);
         }
 
-        this.plugin.saveResource(fileName + ".yml", false);
+        this.plugin.saveResource(fileName, false);
     }
 
     public void save() throws IOException {
@@ -55,11 +55,11 @@ public class ConfigFile {
     public void reload() {
 
         if(this.file == null) {
-            file = new File(plugin.getDataFolder(), fileName + ".yml");
+            file = new File(plugin.getDataFolder(), fileName);
         }
 
         this.configuration = YamlConfiguration.loadConfiguration(this.file);
-        final InputStream defaultStream = plugin.getResource(fileName + ".yml");
+        final InputStream defaultStream = plugin.getResource(fileName);
 
         if(defaultStream != null) {
             YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultStream));

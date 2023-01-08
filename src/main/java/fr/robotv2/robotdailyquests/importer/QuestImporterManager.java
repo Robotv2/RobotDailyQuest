@@ -1,10 +1,14 @@
 package fr.robotv2.robotdailyquests.importer;
 
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableClassToInstanceMap;
 import com.google.common.collect.ImmutableMap;
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import fr.robotv2.robotdailyquests.importer.impl.OdailyQuestImport;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +16,8 @@ import java.util.Map;
 public class QuestImporterManager {
 
     private final RobotDailyQuest instance;
-    private final Map<ImportPlugin, AbstractQuestImporter> importers = new ImmutableMap.Builder<ImportPlugin, AbstractQuestImporter>()
-            .put(ImportPlugin.ODAILYQUEST, new OdailyQuestImport())
+    private final ClassToInstanceMap<AbstractQuestImporter> importers = new ImmutableClassToInstanceMap.Builder<AbstractQuestImporter>()
+            .put(OdailyQuestImport.class, new OdailyQuestImport())
             .build();
 
     public QuestImporterManager(RobotDailyQuest instance) {
@@ -21,16 +25,26 @@ public class QuestImporterManager {
     }
 
     public enum ImportPlugin {
-        ODAILYQUEST,
+
+        ODAILYQUEST(OdailyQuestImport.class),
         ;
+
+        public final Class<OdailyQuestImport> clazz;
+        ImportPlugin(Class<OdailyQuestImport> clazz) {
+            this.clazz = clazz;
+        }
     }
 
-    public boolean startImport(ImportPlugin plugin) {
+    public boolean startImport(ImportPlugin plugin, String resourcePath) {
 
-        final AbstractQuestImporter importer = importers.get(plugin);
+        final AbstractQuestImporter importer = importers.get(plugin.clazz);
 
         if(importer == null) {
-            throw new IllegalArgumentException("can't find plugin: " + plugin);
+            throw new IllegalArgumentException("Can't find plugin: " + plugin);
+        }
+
+        if(!resourcePath.endsWith(".yml")) {
+            resourcePath = resourcePath.concat(".yml");
         }
 
         if(importer.getPlugin() == null) {
@@ -38,22 +52,29 @@ public class QuestImporterManager {
         }
 
         final List<AbstractQuestImporter.QuestImport> imports = importer.startImport();
+
+        if(imports.isEmpty()) {
+            return false; // Couldn't find any quests.
+        }
+
+        final File file = new File(this.instance.getDataFolder(), resourcePath);
+        final FileConfiguration configuration = YamlConfiguration.loadConfiguration(file);
+
         imports.stream()
                 .filter(quest -> this.instance.getQuestManager().fromId(quest.id()) == null)
-                .forEach(this::toQuestFile);
+                .forEach(quest -> this.toQuestFile(quest, configuration));
 
         try {
-            this.instance.getQuestFile().save();
+            configuration.save(file);
         } catch (IOException e) {
-            return false;
+            return false; // An error occurred while creating the quest file.
         }
 
         return true;
     }
 
-    private void toQuestFile(AbstractQuestImporter.QuestImport questImport) {
+    private void toQuestFile(AbstractQuestImporter.QuestImport questImport, FileConfiguration configuration) {
 
-        FileConfiguration configuration = this.instance.getQuestFile().getConfiguration();
         final String prefix = "quests." + questImport.id() + ".";
 
         configuration.set(prefix + "name", questImport.name());

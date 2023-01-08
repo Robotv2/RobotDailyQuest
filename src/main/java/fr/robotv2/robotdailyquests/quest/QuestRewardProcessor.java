@@ -4,7 +4,6 @@ import fr.robotv2.robotdailyquests.dependencies.VaultAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.List;
 import java.util.UUID;
 
 public class QuestRewardProcessor {
@@ -19,9 +18,7 @@ public class QuestRewardProcessor {
             return;
         }
 
-        final List<String> rewards = quest.getRewards();
-
-        for(String reward : rewards) {
+        for(String reward : quest.getRewards()) {
 
             final String prefix = reward.split( " ")[0];
 
@@ -33,17 +30,17 @@ public class QuestRewardProcessor {
                 case "[PLAYER]" -> Bukkit.dispatchCommand(player, reward);
 
                 case "[MONEY]" -> {
-                    final double bal = Double.parseDouble(reward.replace(" ", ""));
+                    final double bal = Double.parseDouble(reward.trim());
                     VaultAPI.giveMoney(player, bal);
                 }
 
                 case "[EXP_LEVEL]" -> {
-                       final int level = Integer.parseInt(reward.replace(" ", ""));
+                       final int level = Integer.parseInt(reward.trim());
                        player.giveExpLevels(level);
                 }
 
                 case "[EXP_POINTS]" -> {
-                    final int points = Integer.parseInt(reward.replace(" ", ""));
+                    final int points = Integer.parseInt(reward.trim());
                     player.giveExp(points);
                 }
             }

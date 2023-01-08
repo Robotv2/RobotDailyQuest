@@ -31,4 +31,5 @@ public class QuestRequirement {
     public boolean isTarget(String target) {
         return this.targets.contains(target.toUpperCase());
     }
+
 }

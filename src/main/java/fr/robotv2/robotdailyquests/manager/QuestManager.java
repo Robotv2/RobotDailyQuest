@@ -1,6 +1,7 @@
 package fr.robotv2.robotdailyquests.manager;
 
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
+import fr.robotv2.robotdailyquests.enums.QuestDifficulty;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.quest.Quest;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +16,10 @@ public class QuestManager {
 
     private final Map<String, Quest> quests = new HashMap<>();
     private final List<ActiveQuest> activeQuests = new ArrayList<>();
+
+    public void clearQuests() {
+        this.quests.clear();
+    }
 
     public void cacheQuest(Quest quest) {
         this.quests.put(quest.getId().toLowerCase(), quest);
@@ -36,9 +41,27 @@ public class QuestManager {
                 .toList();
     }
 
-    public Quest getRandomQuest(QuestResetDelay delay) {
-        final List<Quest> quests = this.getQuests(delay);
-        if(quests.isEmpty()) return null;
+    @UnmodifiableView
+    public List<Quest> getQuests(QuestDifficulty difficulty) {
+        return getQuests().stream()
+                .filter(quest -> quest.getDifficulty() == difficulty)
+                .toList();
+    }
+
+    @UnmodifiableView
+    public List<Quest> getQuests(QuestResetDelay delay, QuestDifficulty difficulty) {
+        return getQuests().stream()
+                .filter(quest -> quest.getDelay() == delay && quest.getDifficulty() == difficulty)
+                .toList();
+    }
+
+    public Quest getRandomQuest(QuestResetDelay delay, QuestDifficulty difficulty) {
+        final List<Quest> quests = this.getQuests(delay, difficulty);
+
+        if(quests.isEmpty()) {
+            return null;
+        }
+
         return quests.get(random.nextInt(quests.size()));
     }
 
@@ -62,10 +85,10 @@ public class QuestManager {
         this.activeQuests.remove(quest);
     }
 
-    public void fillLoadedQuest(QuestResetDelay delay, int amount) {
+    public void fillLoadedQuest(QuestResetDelay delay, QuestDifficulty difficulty, int amount) {
 
         final List<Quest> quests = new ArrayList<>();
-        final int max = this.getQuests(delay).size();
+        final int max = this.getQuests(delay, difficulty).size();
 
         while(quests.size() < amount) {
 
@@ -73,7 +96,8 @@ public class QuestManager {
                 break;
             }
 
-            final Quest random = this.getRandomQuest(delay);
+            final Quest random = this.getRandomQuest(delay, difficulty);
+
             if(random == null) {
                 break; //There is no quest available for this delay.
             }
@@ -83,8 +107,7 @@ public class QuestManager {
             }
         }
 
-        final List<ActiveQuest> activeQuests =
-                quests.stream()
+        final List<ActiveQuest> activeQuests = quests.stream()
                 .map(quest -> new ActiveQuest(quest, System.currentTimeMillis()))
                 .toList();
 

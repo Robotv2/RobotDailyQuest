@@ -2,6 +2,7 @@ package fr.robotv2.robotdailyquests;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
+import fr.robotv2.robotdailyquests.enums.QuestDifficulty;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 
 import java.sql.SQLException;
@@ -37,9 +38,12 @@ public class QuestResetService {
                 return;
             }
 
-            final int max = instance.getConfig().getInt("max-quests." + delay.name().toLowerCase());
             instance.getQuestManager().removeActiveQuest(delay);
-            instance.getQuestManager().fillLoadedQuest(delay, max);
+
+            for(QuestDifficulty difficulty : QuestDifficulty.VALUES) {
+                final int max = instance.getConfig().getInt("max-quests." + delay.name().toLowerCase() + "." + difficulty.name().toLowerCase(), 0);
+                instance.getQuestManager().fillLoadedQuest(delay, difficulty, max);
+            }
 
             instance.getSaveTask().run();
 

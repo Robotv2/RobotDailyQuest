@@ -1,5 +1,6 @@
 package fr.robotv2.robotdailyquests.quest;
 
+import fr.robotv2.robotdailyquests.enums.QuestDifficulty;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.enums.QuestType;
 import fr.robotv2.robotdailyquests.util.ColorUtil;
@@ -14,6 +15,7 @@ import java.util.Objects;
 
 public class Quest {
 
+    private final ConfigurationSection section;
     private final String id;
 
     private final String name;
@@ -22,17 +24,21 @@ public class Quest {
 
     private final QuestResetDelay delay;
     private final QuestType type;
-    private final QuestRequirement requirement;
+    private final QuestDifficulty difficulty;
 
+    private final QuestRequirement requirement;
     private final List<String> rewards;
 
     public Quest(ConfigurationSection section) {
+        this.section = section;
+
         this.id = section.getName();
         this.name = section.getString("name");
         this.description = section.getStringList("description");
         this.material = Material.matchMaterial(section.getString("menu_item", "BOOK"));
 
         this.type = QuestType.valueOf(section.getString("quest_type"));
+        this.difficulty = QuestDifficulty.valueOf(section.getString("quest_difficulty"));
         this.delay = QuestResetDelay.valueOf(section.getString("quest_reset_delay"));
 
         final List<String> targets = section.getStringList("required_targets");
@@ -40,6 +46,10 @@ public class Quest {
         this.requirement = new QuestRequirement(type, targets, requiredAmount);
 
         this.rewards = section.getStringList("rewards");
+    }
+
+    public ConfigurationSection getSection() {
+        return this.section;
     }
 
     public String getId() {
@@ -56,6 +66,10 @@ public class Quest {
 
     public Material getMaterial() {
         return this.material;
+    }
+
+    public QuestDifficulty getDifficulty() {
+        return this.difficulty;
     }
 
     public ItemStack getGuiItem() {

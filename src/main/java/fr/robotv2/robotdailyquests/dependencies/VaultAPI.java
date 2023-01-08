@@ -9,6 +9,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 public class VaultAPI {
 
     private static Economy eco;
+
     public static boolean initialize(Plugin plugin) {
 
         if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {

@@ -21,6 +21,7 @@ quests:
       - ZOMBIE
     required_amount: 5
     quest_reset_delay: DAILY
+    quest_difficulty: EASY
   4:
     name: "Best friend"
     menu_item: LEAD

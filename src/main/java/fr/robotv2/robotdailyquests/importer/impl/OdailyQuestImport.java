@@ -52,25 +52,24 @@ public class OdailyQuestImport extends AbstractQuestImporter {
             final YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
             final ConfigurationSection questsSection = configuration.getConfigurationSection("quests");
 
-            if(questsSection == null) continue;
+            if (questsSection == null) continue;
 
-            for(String id : questsSection.getKeys(false)) {
+            for (String id : questsSection.getKeys(false)) {
                 final ConfigurationSection questSection = questsSection.getConfigurationSection(id);
 
-                if(questSection == null) {
+                if (questSection == null) {
                     continue;
                 }
 
-                final QuestImport questImport = this.fromSection(fileName.replace(".yml", ""), questSection);
+                final QuestImport questImport = this.fromSection(fileName.substring(0, fileName.length() - 4), questSection);
 
-                if(questImport == null) {
+                if (questImport == null) {
                     continue;
                 }
 
                 result.add(questImport);
             }
         }
-
 
         return result;
     }

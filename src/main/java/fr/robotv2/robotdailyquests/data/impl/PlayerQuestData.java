@@ -11,9 +11,14 @@ import java.util.*;
 public class PlayerQuestData {
 
     private final static Comparator<PlayerQuestArchive> ARCHIVE_COMPARATOR = (archive1, archive2) -> {
-        if(archive1.timeStamp() == archive2.timeStamp()) return 0;
+
+        if(archive1.timeStamp() == archive2.timeStamp()) {
+            return 0;
+        }
+
         return archive1.timeStamp() > archive2.timeStamp() ? -1 : 1;
     };
+
     private final static Map<UUID, PlayerQuestData> datas = new HashMap<>();
 
     public static void registerData(PlayerQuestData data) {

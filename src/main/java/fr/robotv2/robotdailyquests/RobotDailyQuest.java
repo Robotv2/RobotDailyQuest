@@ -7,7 +7,6 @@ import fr.robotv2.robotdailyquests.data.QuestDatabaseManager;
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.dependencies.VaultAPI;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
-import fr.robotv2.robotdailyquests.file.ConfigFile;
 import fr.robotv2.robotdailyquests.importer.QuestImporterManager;
 import fr.robotv2.robotdailyquests.listeners.GlitchChecker;
 import fr.robotv2.robotdailyquests.listeners.block.BlockBreakListener;
@@ -20,8 +19,11 @@ import fr.robotv2.robotdailyquests.manager.QuestManager;
 import fr.robotv2.robotdailyquests.quest.Quest;
 import fr.robotv2.robotdailyquests.ui.GuiHandler;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 
 import java.io.File;
@@ -39,8 +41,6 @@ public final class RobotDailyQuest extends JavaPlugin {
 
     private GuiHandler guiHandler;
 
-    private ConfigFile questFile;
-
     public static RobotDailyQuest get() {
         return JavaPlugin.getPlugin(RobotDailyQuest.class);
     }
@@ -55,7 +55,6 @@ public final class RobotDailyQuest extends JavaPlugin {
         saveDefaultConfig();
 
         this.loadFiles();
-        this.loadQuests();
         this.loadListeners();
         this.loadUis();
         this.loadCommandHandler();
@@ -65,7 +64,7 @@ public final class RobotDailyQuest extends JavaPlugin {
         this.saveTask.runTaskTimer(this, 60 * 20 * 5, 60 * 20 * 5);
 
         this.service = new QuestResetService(this);
-        for (QuestResetDelay delay : QuestResetDelay.VALUES) {
+        for (QuestResetxDelay delay : QuestResetDelay.VALUES) {
 
             this.getResetService().scheduleNextReset(delay);
             final List<ActiveQuest> activeQuests = this.getQuestManager().getActiveQuests(delay);
@@ -91,9 +90,9 @@ public final class RobotDailyQuest extends JavaPlugin {
     }
 
     public void onReload() {
-        getQuestFile().reload();
         this.reloadConfig();
-        this.loadQuests();
+        this.getQuestManager().clearQuests();
+        this.loadFiles();
     }
 
     // <- GETTERS ->
@@ -122,19 +121,26 @@ public final class RobotDailyQuest extends JavaPlugin {
         return this.guiHandler;
     }
 
-    public ConfigFile getQuestFile() {
-        return this.questFile;
-    }
-
     public QuestImporterManager getQuestImporterManager() {
         return this.questImporterManager;
     }
 
     // <- LOADERS ->
 
-    private void loadQuests() {
+    private void loadQuests(String ressourcePath) {
 
-        final ConfigurationSection section = getQuestFile().getConfiguration().getConfigurationSection("quests");
+        final File file = new File(this.getDataFolder(), ressourcePath);
+
+        if(!file.exists()) {
+            return;
+        }
+
+        this.loadQuests(YamlConfiguration.loadConfiguration(file));
+    }
+
+    private void loadQuests(@NotNull FileConfiguration configuration) {
+
+        final ConfigurationSection section = configuration.getConfigurationSection("quests");
         if(section == null) return;
 
         for(String key : section.getKeys(false)) {
@@ -215,6 +221,7 @@ public final class RobotDailyQuest extends JavaPlugin {
     }
 
     private void loadFiles() {
-        this.questFile = new ConfigFile(this, "quests", true);
+        this.getConfig().getStringList("quest-files")
+                .forEach(this::loadQuests);
     }
 }
