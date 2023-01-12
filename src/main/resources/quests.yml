@@ -9,7 +9,8 @@ quests:
     required_targets:
       - STONE
     required_amount: 32
-    quest_reset_delayt: DAILY
+    quest_reset_delay: DAILY
+    quest_difficulty: EASY
   3:
     name: "Too many zombies"
     menu_item: ZOMBIE_HEAD
@@ -33,6 +34,7 @@ quests:
       - WOLF
     required_amount: 1
     quest_reset_delay: DAILY
+    quest_difficulty: EASY
   5:
     name: "More sheeps !"
     menu_item: WHITE_WOOL
@@ -44,6 +46,7 @@ quests:
       - SHEEP
     required_amount: 2
     quest_reset_delay: DAILY
+    quest_difficulty: EASY
   6:
     name: "Mushrooms..."
     menu_item: RED_MUSHROOM
@@ -55,6 +58,7 @@ quests:
       - MUSHROOM_COW
     required_amount: 1
     quest_reset_delay: DAILY
+    quest_difficulty: EASY
   9:
     name: "&aMiiiiilk."
     menu_item: MILK_BUCKET
@@ -66,3 +70,7 @@ quests:
       - COW
     required_amount: 2
     quest_reset_delay: DAILY
+    quest_difficulty: EASY
+    rewards:
+      - "[CONSOLE] give %player% diamond 64"
+      - "[MONEY] 500"

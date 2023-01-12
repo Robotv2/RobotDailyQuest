@@ -39,12 +39,13 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
 
         final List<ItemStack> drops = event.getItemsHarvested();
         int amount = 0;
+
         for (ItemStack item : drops) {
             if (item.getType() == material) {
                 amount += item.getAmount();
             }
         }
 
-        this.increaseProgression(event.getPlayer(), QuestType.FARMING, material.name(), amount);
+        this.increaseProgression(event.getPlayer(), QuestType.FARMING, material, amount);
     }
 }

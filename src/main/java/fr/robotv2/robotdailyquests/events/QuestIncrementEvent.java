@@ -36,6 +36,6 @@ public class QuestIncrementEvent extends QuestEvent {
             return -1;
         }
 
-        return quest.getRequirement().getAmount();
+        return quest.getRequiredAmount();
     }
 }

@@ -34,6 +34,6 @@ public class PlayerCraftListener extends QuestProgressionEnhancer {
             return;
         }
 
-        this.increaseProgression(player, QuestType.CRAFT, item.getType().name(), item.getAmount());
+        this.increaseProgression(player, QuestType.CRAFT, item.getType(), item.getAmount());
     }
 }

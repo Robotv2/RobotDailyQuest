@@ -61,7 +61,7 @@ public class PlaceholderClip extends PlaceholderExpansion {
             case "name" -> quest.getName();
             case "reset" -> quest.getDelay().name().toLowerCase();
             case "difficulty" -> quest.getDifficulty().name().toLowerCase();
-            case "required" -> String.valueOf(quest.getRequirement().getAmount());
+            case "required" -> String.valueOf(quest.getRequiredAmount());
             case "progress" -> String.valueOf(activeQuest.getCurrentProgress(player.getUniqueId()));
             default -> params;
         };

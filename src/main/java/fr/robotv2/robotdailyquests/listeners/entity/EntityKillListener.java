@@ -29,6 +29,6 @@ public class EntityKillListener extends QuestProgressionEnhancer {
             return;
         }
 
-        this.increaseProgression(player, QuestType.KILL, entity.getType().name());
+        this.increaseProgression(player, QuestType.KILL, entity.getType(), 1);
     }
 }

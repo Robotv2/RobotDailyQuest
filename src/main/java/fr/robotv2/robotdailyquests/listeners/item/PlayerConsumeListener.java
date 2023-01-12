@@ -15,6 +15,6 @@ public class PlayerConsumeListener extends QuestProgressionEnhancer {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onConsume(PlayerItemConsumeEvent event) {
-        this.increaseProgression(event.getPlayer(), QuestType.CONSUME, event.getItem().getType().name());
+        this.increaseProgression(event.getPlayer(), QuestType.CONSUME, event.getItem().getType(), 1);
     }
 }

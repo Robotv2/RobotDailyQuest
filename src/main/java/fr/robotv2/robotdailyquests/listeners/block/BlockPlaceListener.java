@@ -15,6 +15,6 @@ public class BlockPlaceListener extends QuestProgressionEnhancer {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent event) {
-        this.increaseProgression(event.getPlayer(), QuestType.PLACE, event.getBlock().getType().name());
+        this.increaseProgression(event.getPlayer(), QuestType.PLACE, event.getBlock().getType(), 1);
     }
 }

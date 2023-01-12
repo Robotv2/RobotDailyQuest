@@ -35,20 +35,6 @@ public class QuestManager {
     }
 
     @UnmodifiableView
-    public List<Quest> getQuests(QuestResetDelay delay) {
-        return getQuests().stream()
-                .filter(quest -> quest.getDelay() == delay)
-                .toList();
-    }
-
-    @UnmodifiableView
-    public List<Quest> getQuests(QuestDifficulty difficulty) {
-        return getQuests().stream()
-                .filter(quest -> quest.getDifficulty() == difficulty)
-                .toList();
-    }
-
-    @UnmodifiableView
     public List<Quest> getQuests(QuestResetDelay delay, QuestDifficulty difficulty) {
         return getQuests().stream()
                 .filter(quest -> quest.getDelay() == delay && quest.getDifficulty() == difficulty)

@@ -21,6 +21,6 @@ public class PlayerProjectileListener extends QuestProgressionEnhancer {
             return;
         }
 
-        this.increaseProgression(player, QuestType.LAUNCH, event.getEntity().getType().name());
+        this.increaseProgression(player, QuestType.LAUNCH, event.getEntity().getType(), 1);
     }
 }

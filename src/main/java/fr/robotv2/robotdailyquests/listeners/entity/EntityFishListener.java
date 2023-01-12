@@ -24,9 +24,10 @@ public class EntityFishListener extends QuestProgressionEnhancer {
             return;
         }
 
-        final String type = entity instanceof Item item
-                ? item.getItemStack().getType().name()
-                : entity.getType().name();
-        this.increaseProgression(event.getPlayer(), QuestType.FISH, type);
+        if(entity instanceof Item item) {
+            this.increaseProgression(event.getPlayer(), QuestType.FISH, item.getType(), 1);
+        } else {
+            this.increaseProgression(event.getPlayer(), QuestType.FISH, entity.getType(), 1);
+        }
     }
 }

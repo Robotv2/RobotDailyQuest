@@ -88,7 +88,7 @@ public class ActiveQuest {
 
         Bukkit.getPluginManager().callEvent(new QuestIncrementEvent(player, this, amount));
 
-        if(current >= quest.getRequirement().getAmount()) {
+        if(current >= quest.getRequiredAmount()) {
 
             this.done(playerUUID);
             PlayerQuestData.getData(playerUUID).incrementQuestAchieved(quest);

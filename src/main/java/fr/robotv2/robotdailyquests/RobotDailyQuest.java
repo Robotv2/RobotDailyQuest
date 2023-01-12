@@ -5,8 +5,10 @@ import com.j256.ormlite.support.ConnectionSource;
 import fr.robotv2.robotdailyquests.data.PlayerDataInitializer;
 import fr.robotv2.robotdailyquests.data.QuestDatabaseManager;
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
+import fr.robotv2.robotdailyquests.dependencies.PlaceholderClip;
 import fr.robotv2.robotdailyquests.dependencies.VaultAPI;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
+import fr.robotv2.robotdailyquests.file.ConfigFile;
 import fr.robotv2.robotdailyquests.importer.QuestImporterManager;
 import fr.robotv2.robotdailyquests.listeners.GlitchChecker;
 import fr.robotv2.robotdailyquests.listeners.block.BlockBreakListener;
@@ -64,7 +66,7 @@ public final class RobotDailyQuest extends JavaPlugin {
         this.saveTask.runTaskTimer(this, 60 * 20 * 5, 60 * 20 * 5);
 
         this.service = new QuestResetService(this);
-        for (QuestResetxDelay delay : QuestResetDelay.VALUES) {
+        for (QuestResetDelay delay : QuestResetDelay.VALUES) {
 
             this.getResetService().scheduleNextReset(delay);
             final List<ActiveQuest> activeQuests = this.getQuestManager().getActiveQuests(delay);
@@ -76,6 +78,11 @@ public final class RobotDailyQuest extends JavaPlugin {
 
         if(VaultAPI.initialize(this)) {
             getLogger().info("Hook to Vault !");
+        }
+
+        if(getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PlaceholderClip(this).register();
+            getLogger().info("Hook to placeholder API !");
         }
 
         this.questImporterManager = new QuestImporterManager(this);
@@ -93,6 +100,7 @@ public final class RobotDailyQuest extends JavaPlugin {
         this.reloadConfig();
         this.getQuestManager().clearQuests();
         this.loadFiles();
+        this.guiHandler.reloadGuiConfig();
     }
 
     // <- GETTERS ->

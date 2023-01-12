@@ -3,7 +3,6 @@ package fr.robotv2.robotdailyquests.importer.impl;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.enums.QuestType;
 import fr.robotv2.robotdailyquests.importer.AbstractQuestImporter;
-import fr.robotv2.robotdailyquests.quest.QuestRequirement;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -81,6 +80,7 @@ public class OdailyQuestImport extends AbstractQuestImporter {
         final String name = section.getString("name");
         final Material material = Material.matchMaterial(section.getString("menu_item", "BOOK"));
         final List<String> description = section.getStringList("description");
+        final int requiredAmount = section.getInt("required_amount");
 
         final QuestResetDelay delay = this.getDelayByFileName(fileName);
         QuestType type;
@@ -95,8 +95,7 @@ public class OdailyQuestImport extends AbstractQuestImporter {
             return null;
         }
 
-        final QuestRequirement requirement = new QuestRequirement(type, this.getTargets(section), section.getInt("required_amount"));
-        return new QuestImport(id, name, description, material, delay, type, requirement, Collections.emptyList());
+        return new QuestImport(id, name, description, material, delay, type, requiredAmount, Collections.emptyList());
     }
 
     private List<String> getTargets(ConfigurationSection section) {

@@ -26,7 +26,7 @@ public class Quest {
     private final QuestType type;
     private final QuestDifficulty difficulty;
 
-    private final QuestRequirement requirement;
+    private final int requiredAmount;
     private final List<String> rewards;
 
     public Quest(ConfigurationSection section) {
@@ -41,10 +41,7 @@ public class Quest {
         this.difficulty = QuestDifficulty.valueOf(section.getString("quest_difficulty"));
         this.delay = QuestResetDelay.valueOf(section.getString("quest_reset_delay"));
 
-        final List<String> targets = section.getStringList("required_targets");
-        final int requiredAmount = section.getInt("required_amount", 0);
-        this.requirement = new QuestRequirement(type, targets, requiredAmount);
-
+        this.requiredAmount = section.getInt("required_amount", 0);
         this.rewards = section.getStringList("rewards");
     }
 
@@ -72,17 +69,6 @@ public class Quest {
         return this.difficulty;
     }
 
-    public ItemStack getGuiItem() {
-        final ItemStack itemStack = new ItemStack(this.getMaterial());
-        final ItemMeta meta = Objects.requireNonNull(itemStack.getItemMeta());
-
-        meta.setDisplayName(ColorUtil.color(this.name));
-        meta.setLore(this.description.stream().map(ColorUtil::color).toList());
-
-        itemStack.setItemMeta(meta);
-        return itemStack;
-    }
-
     public ItemStack getGuiItem(int progress) {
 
         final ItemStack itemStack = new ItemStack(this.getMaterial());
@@ -92,7 +78,7 @@ public class Quest {
         meta.setDisplayName(ColorUtil.color(this.name));
 
         description.add(" ");
-        description.add("&7Progression: &e" + progress + "&8/&e" + getRequirement().getAmount());
+        description.add("&7Progression: &e" + progress + "&8/&e" + this.requiredAmount);
 
         meta.setLore(description.stream().map(ColorUtil::color).toList());
 
@@ -108,12 +94,12 @@ public class Quest {
         return this.delay;
     }
 
-    public QuestRequirement getRequirement() {
-        return this.requirement;
-    }
-
     public List<String> getRewards() {
         return this.rewards;
+    }
+
+    public int getRequiredAmount() {
+        return this.requiredAmount;
     }
 
     @Override
@@ -123,6 +109,6 @@ public class Quest {
             return false;
         }
 
-        return this.id.equals(target.id);
+        return Objects.equals(this.id, target.id);
     }
 }

@@ -1,0 +1,25 @@
+quest-gui:
+  name: "&fQUESTS &8-"
+  row: 5
+  pattern:
+    - "111111111"
+    - "101101101"
+    - "101101101"
+    - "101101101"
+    - "111111111"
+  items:
+    '1':
+      material: BLACK_STAINED_GLASS_PANE
+      name: "&8"
+  daily:
+    - 10
+    - 13
+    - 16
+  weekly:
+    - 19
+    - 22
+    - 25
+  monthly:
+    - 28
+    - 31
+    - 34

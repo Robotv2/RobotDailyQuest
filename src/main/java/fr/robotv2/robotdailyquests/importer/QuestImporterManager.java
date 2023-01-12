@@ -2,7 +2,6 @@ package fr.robotv2.robotdailyquests.importer;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableClassToInstanceMap;
-import com.google.common.collect.ImmutableMap;
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import fr.robotv2.robotdailyquests.importer.impl.OdailyQuestImport;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -11,7 +10,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public class QuestImporterManager {
 
@@ -81,8 +79,7 @@ public class QuestImporterManager {
         configuration.set(prefix + "menu_item", questImport.material().name());
         configuration.set(prefix + "description", questImport.description());
         configuration.set(prefix + "quest_type", questImport.type().name());
-        configuration.set(prefix + "required_targets", questImport.requirement().getTargets());
-        configuration.set(prefix + "required_amount", questImport.requirement().getAmount());
+        configuration.set(prefix + "required_amount", questImport.requiredAmount());
         configuration.set(prefix + "quest_reset_delay", questImport.delay().name());
     }
 }

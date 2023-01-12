@@ -26,7 +26,7 @@ public class EntityMilkingListener extends QuestProgressionEnhancer {
         }
 
         if (bucket.getType() == Material.MILK_BUCKET) {
-            this.increaseProgression(event.getPlayer(), QuestType.MILKING, EntityType.COW.name());
+            this.increaseProgression(event.getPlayer(), QuestType.MILKING, EntityType.COW, 1);
         }
     }
 }

@@ -17,8 +17,8 @@ public class QuestCommand {
     }
 
     @Subcommand("menu")
-    public void onDefault(BukkitCommandActor actor, QuestResetDelay delay) {
-        instance.getGuiHandler().openBasicQuestGui(actor.requirePlayer(), delay);
+    public void onDefault(BukkitCommandActor actor) {
+        instance.getGuiHandler().openMenu(actor.requirePlayer());
     }
 
     @Subcommand("reload")

@@ -28,6 +28,6 @@ public class PlayerPickupListener extends QuestProgressionEnhancer {
             return;
         }
 
-        this.increaseProgression(player, QuestType.PICKUP, item.getItemStack().getType().name(), item.getItemStack().getAmount());
+        this.increaseProgression(player, QuestType.PICKUP, item.getItemStack().getType(), item.getItemStack().getAmount());
     }
 }
