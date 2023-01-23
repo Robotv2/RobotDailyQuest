@@ -4,11 +4,8 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import fr.robotv2.robotdailyquests.data.PlayerDataInitializer;
 import fr.robotv2.robotdailyquests.data.QuestDatabaseManager;
-import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.dependencies.PlaceholderClip;
 import fr.robotv2.robotdailyquests.dependencies.VaultAPI;
-import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
-import fr.robotv2.robotdailyquests.file.ConfigFile;
 import fr.robotv2.robotdailyquests.importer.QuestImporterManager;
 import fr.robotv2.robotdailyquests.listeners.GlitchChecker;
 import fr.robotv2.robotdailyquests.listeners.block.BlockBreakListener;
@@ -29,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 
 import java.io.File;
-import java.util.List;
 
 public final class RobotDailyQuest extends JavaPlugin {
 
@@ -64,17 +60,7 @@ public final class RobotDailyQuest extends JavaPlugin {
         this.loadDatabaseManager();
         this.saveTask = new QuestSaveTask(this);
         this.saveTask.runTaskTimer(this, 60 * 20 * 5, 60 * 20 * 5);
-
         this.service = new QuestResetService(this);
-        for (QuestResetDelay delay : QuestResetDelay.VALUES) {
-
-            this.getResetService().scheduleNextReset(delay);
-            final List<ActiveQuest> activeQuests = this.getQuestManager().getActiveQuests(delay);
-
-            if(activeQuests.isEmpty() || activeQuests.get(0).hasEnded()) {
-                this.getResetService().getResetRunnable(delay, false).run();
-            }
-        }
 
         if(VaultAPI.initialize(this)) {
             getLogger().info("Hook to Vault !");
@@ -135,9 +121,14 @@ public final class RobotDailyQuest extends JavaPlugin {
 
     // <- LOADERS ->
 
-    private void loadQuests(String ressourcePath) {
+    private void loadFiles() {
+        this.getConfig().getStringList("quest-files")
+                .forEach(this::loadQuests);
+    }
 
-        final File file = new File(this.getDataFolder(), ressourcePath);
+    private void loadQuests(String resourcePath) {
+
+        final File file = new File(this.getDataFolder(), resourcePath);
 
         if(!file.exists()) {
             return;
@@ -207,16 +198,11 @@ public final class RobotDailyQuest extends JavaPlugin {
 
     private void loadDatabaseManager() {
         try {
-
             final File file = new File(getDataFolder(), "database.db");
             if(!file.exists()) file.createNewFile();
-
             final String databaseURL = "jdbc:sqlite:".concat(file.getPath());
             final ConnectionSource connectionSource = new JdbcConnectionSource(databaseURL);
-
             this.questDatabaseManager = new QuestDatabaseManager(connectionSource);
-            this.questDatabaseManager.getLoadedQuest().getValues().forEach(quest -> this.getQuestManager().cacheLoadedQuest(quest));
-
         } catch (Exception e) {
             getLogger().warning("An error occurred while loading database manager: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
@@ -226,10 +212,5 @@ public final class RobotDailyQuest extends JavaPlugin {
     private void loadCommandHandler() {
         final BukkitCommandHandler handler = BukkitCommandHandler.create(this);
         handler.register(new QuestCommand(this));
-    }
-
-    private void loadFiles() {
-        this.getConfig().getStringList("quest-files")
-                .forEach(this::loadQuests);
     }
 }

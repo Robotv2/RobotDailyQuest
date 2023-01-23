@@ -1,6 +1,5 @@
 package fr.robotv2.robotdailyquests.data.impl;
 
-import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
@@ -13,20 +12,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 @DatabaseTable(tableName = "robot_quest_loaded")
-public class ActiveQuest {
+public class ActiveQuest implements java.io.Serializable {
 
-    @DatabaseField(columnName = "player-done", dataType = DataType.SERIALIZABLE)
-    private final ArrayList<UUID> playerDone = new ArrayList<>();
+    @DatabaseField(columnName = "id", unique = true, generatedId = true)
+    private int id;
 
-    @DatabaseField(columnName = "player-progress", dataType = DataType.SERIALIZABLE)
-    private final HashMap<UUID, Integer> playerProgress = new HashMap<>();
+    @DatabaseField(columnName = "owner")
+    private UUID owner;
 
-    @DatabaseField(columnName = "quest-id", id = true, unique = true)
+    @DatabaseField(columnName = "quest-id")
     private String questId;
 
     @DatabaseField(columnName = "start-time-stamp")
@@ -35,12 +32,23 @@ public class ActiveQuest {
     @DatabaseField(columnName = "quest-delay-type")
     private QuestResetDelay delay;
 
+    @DatabaseField(columnName = "quest-done")
+    private boolean done;
+
+    @DatabaseField(columnName = "player-progress")
+    private int progress = 0;
+
+    @DatabaseField(columnName = "next-reset")
+    private long nextReset;
+
     public ActiveQuest() { }
 
-    public ActiveQuest(Quest quest, long startTimeStamp) {
+    public ActiveQuest(UUID owner, Quest quest, long startTimeStamp) {
+        this.owner = owner;
         this.questId = quest.getId();
         this.delay = quest.getDelay();
         this.startTimeStamp = startTimeStamp;
+        this.nextReset = quest.getDelay().nextResetToEpochMilli();
     }
 
     public long getStartTimeStamp() {
@@ -55,25 +63,29 @@ public class ActiveQuest {
         return this.delay;
     }
 
+    public UUID getOwner() {
+        return this.owner;
+    }
+
     @Nullable
     public Quest getQuest() {
         return RobotDailyQuest.get().getQuestManager().fromId(this.getQuestId());
     }
 
-    public boolean hasBeenDone(UUID playerUUID) {
-        return this.playerDone.contains(playerUUID);
+    public boolean isDone() {
+        return done;
     }
 
-    public void done(UUID playerUUID) {
-        this.playerDone.add(playerUUID);
+    public void done() {
+        this.done = true;
     }
 
-    public int getCurrentProgress(UUID playerUUID) {
-        return playerProgress.getOrDefault(playerUUID, 0);
+    public int getCurrentProgress() {
+        return this.progress;
     }
 
-    public void setCurrentProgress(Player player, int amount) {
-        playerProgress.put(player.getUniqueId(), amount);
+    public void setCurrentProgress(int amount) {
+        this.progress = amount;
     }
 
     public void incrementCurrentProgress(Player player, int amount) {
@@ -81,8 +93,8 @@ public class ActiveQuest {
         final UUID playerUUID = player.getUniqueId();
         final Quest quest = this.getQuest();
 
-        final int current = this.getCurrentProgress(playerUUID) + amount;
-        this.setCurrentProgress(player, current);
+        final int current = this.getCurrentProgress() + amount;
+        this.setCurrentProgress(current);
 
         if(quest == null) return;
 
@@ -90,12 +102,16 @@ public class ActiveQuest {
 
         if(current >= quest.getRequiredAmount()) {
 
-            this.done(playerUUID);
-            PlayerQuestData.getData(playerUUID).incrementQuestAchieved(quest);
+            this.done();
+            QuestPlayer.getQuestPlayer(playerUUID).incrementQuestAchieved(quest);
             new QuestRewardProcessor().process(player, quest);
 
             Bukkit.getPluginManager().callEvent(new QuestDoneEvent(player, this));
         }
+    }
+
+    public long getNextReset() {
+        return this.nextReset;
     }
 
     public boolean hasEnded() {

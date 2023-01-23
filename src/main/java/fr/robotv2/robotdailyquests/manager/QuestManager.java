@@ -1,6 +1,7 @@
 package fr.robotv2.robotdailyquests.manager;
 
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
+import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
 import fr.robotv2.robotdailyquests.enums.QuestDifficulty;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.quest.Quest;
@@ -12,10 +13,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class QuestManager {
 
-    private static final ThreadLocalRandom random = ThreadLocalRandom.current();
+    private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
     private final Map<String, Quest> quests = new HashMap<>();
-    private final List<ActiveQuest> activeQuests = new ArrayList<>();
 
     public void clearQuests() {
         this.quests.clear();
@@ -23,10 +23,6 @@ public class QuestManager {
 
     public void cacheQuest(Quest quest) {
         this.quests.put(quest.getId().toLowerCase(), quest);
-    }
-
-    public void cacheLoadedQuest(ActiveQuest quest) {
-        this.activeQuests.add(quest);
     }
 
     @UnmodifiableView
@@ -48,30 +44,10 @@ public class QuestManager {
             return null;
         }
 
-        return quests.get(random.nextInt(quests.size()));
+        return quests.get(RANDOM.nextInt(quests.size()));
     }
 
-    @UnmodifiableView
-    public List<ActiveQuest> getActiveQuests() {
-        return Collections.unmodifiableList(this.activeQuests);
-    }
-
-    @UnmodifiableView
-    public List<ActiveQuest> getActiveQuests(QuestResetDelay delay) {
-        return getActiveQuests().stream()
-                .filter(quest -> quest.getResetDelay() == delay)
-                .toList();
-    }
-
-    public void removeActiveQuest(QuestResetDelay delay) {
-        getActiveQuests(delay).forEach(this::removeActiveQuest);
-    }
-
-    public void removeActiveQuest(ActiveQuest quest) {
-        this.activeQuests.remove(quest);
-    }
-
-    public void fillLoadedQuest(QuestResetDelay delay, QuestDifficulty difficulty, int amount) {
+    public void fillQuest(QuestPlayer player, QuestResetDelay delay, QuestDifficulty difficulty, int amount) {
 
         final List<Quest> quests = new ArrayList<>();
         final int max = this.getQuests(delay, difficulty).size();
@@ -93,11 +69,10 @@ public class QuestManager {
             }
         }
 
-        final List<ActiveQuest> activeQuests = quests.stream()
-                .map(quest -> new ActiveQuest(quest, System.currentTimeMillis()))
-                .toList();
-
-        this.activeQuests.addAll(activeQuests);
+        for(Quest quest : quests) {
+            final ActiveQuest activeQuest = new ActiveQuest(player.getUniqueId(), quest, System.currentTimeMillis());
+            player.addActiveQuest(activeQuest);
+        }
     }
 
     @Nullable

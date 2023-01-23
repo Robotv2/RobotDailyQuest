@@ -49,7 +49,7 @@ public class QuestCommand {
         final boolean result = this.instance.getQuestImporterManager().startImport(importer, resourcePath);
 
         if(result) {
-            actor.reply(ChatColor.GREEN + "Toutes quêtes ont été importées avec succès.");
+            actor.reply(ChatColor.GREEN + "Toutes les quêtes ont été importées avec succès.");
         } else {
             actor.reply(ChatColor.RED + "Une erreur a eu lieu pendant l'importation.");
         }

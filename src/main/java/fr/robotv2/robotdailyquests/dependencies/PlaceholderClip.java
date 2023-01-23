@@ -2,6 +2,7 @@ package fr.robotv2.robotdailyquests.dependencies;
 
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
+import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.quest.Quest;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -48,7 +49,7 @@ public class PlaceholderClip extends PlaceholderExpansion {
         try {
             final QuestResetDelay delay = QuestResetDelay.valueOf(args[0]);
             final int number = Integer.parseInt(args[1]);
-            activeQuest = this.instance.getQuestManager().getActiveQuests(delay).get(number);
+            activeQuest = QuestPlayer.getQuestPlayer(player).getActiveQuests(delay).get(number);
         } catch (Exception e) {
             return params;
         }
@@ -62,7 +63,7 @@ public class PlaceholderClip extends PlaceholderExpansion {
             case "reset" -> quest.getDelay().name().toLowerCase();
             case "difficulty" -> quest.getDifficulty().name().toLowerCase();
             case "required" -> String.valueOf(quest.getRequiredAmount());
-            case "progress" -> String.valueOf(activeQuest.getCurrentProgress(player.getUniqueId()));
+            case "progress" -> String.valueOf(activeQuest.getCurrentProgress());
             default -> params;
         };
     }

@@ -2,16 +2,15 @@ package fr.robotv2.robotdailyquests.ui;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
-import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.PatternPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Pattern;
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
+import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.file.ConfigFile;
-import fr.robotv2.robotdailyquests.quest.Quest;
 import fr.robotv2.robotdailyquests.util.ColorUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,7 +20,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.IntStream;
 
 public class GuiHandler {
 
@@ -97,7 +95,7 @@ public class GuiHandler {
         for(QuestResetDelay delay : QuestResetDelay.VALUES) {
 
             int index = 0;
-            final List<ActiveQuest> quests = this.instance.getQuestManager().getActiveQuests(delay);
+            final List<ActiveQuest> quests = QuestPlayer.getQuestPlayer(player).getActiveQuests(delay);
 
             if(quests.isEmpty()) {
                 continue;
@@ -106,6 +104,7 @@ public class GuiHandler {
             for(String slotStr : section.getStringList(delay.name().toLowerCase())) {
 
                 try {
+
                     final int slot = Integer.parseInt(slotStr);
                     final ActiveQuest quest = quests.get(index);
                     ++index;
@@ -117,10 +116,10 @@ public class GuiHandler {
                     final int x = slot % 9;
                     final int y = slot / 9;
 
-                    final int progress = quest.getCurrentProgress(player.getUniqueId());
+                    final int progress = quest.getCurrentProgress();
                     staticPane.addItem(new GuiItem(quest.getQuest().getGuiItem(progress)), x, y);
 
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored) {}
             }
         }
 

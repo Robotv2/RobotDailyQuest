@@ -4,7 +4,7 @@ public enum QuestDifficulty {
 
     EASY,
     MEDIUM,
-    DIFFICULTY,
+    HARD,
     ;
 
     public final static QuestDifficulty[] VALUES = QuestDifficulty.values();

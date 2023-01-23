@@ -26,7 +26,7 @@ public class QuestIncrementEvent extends QuestEvent {
     }
 
     public int getPlayerProgression() {
-        return getQuest().getCurrentProgress(player.getUniqueId());
+        return getQuest().getCurrentProgress();
     }
 
     public int getAmountRequired() {

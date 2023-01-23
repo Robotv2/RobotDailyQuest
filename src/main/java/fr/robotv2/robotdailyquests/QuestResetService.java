@@ -2,6 +2,7 @@ package fr.robotv2.robotdailyquests;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
+import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
 import fr.robotv2.robotdailyquests.enums.QuestDifficulty;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 
@@ -18,7 +19,6 @@ public class QuestResetService {
 
     public QuestResetService(RobotDailyQuest instance) {
         this.instance = instance;
-
     }
 
     public void scheduleNextReset(QuestResetDelay delay) {
@@ -30,7 +30,7 @@ public class QuestResetService {
         return () -> {
 
             try {
-                final DeleteBuilder<ActiveQuest, String> builder = instance.getDatabaseManager().getLoadedQuest().getDao().deleteBuilder();
+                final DeleteBuilder<ActiveQuest, Integer> builder = instance.getDatabaseManager().getActiveQuestData().getDao().deleteBuilder();
                 builder.setWhere(builder.where().eq("quest-delay-type", delay));
                 builder.delete();
             } catch (SQLException e) {
@@ -38,11 +38,8 @@ public class QuestResetService {
                 return;
             }
 
-            instance.getQuestManager().removeActiveQuest(delay);
-
-            for(QuestDifficulty difficulty : QuestDifficulty.VALUES) {
-                final int max = instance.getConfig().getInt("max-quests." + delay.name().toLowerCase() + "." + difficulty.name().toLowerCase(), 0);
-                instance.getQuestManager().fillLoadedQuest(delay, difficulty, max);
+            for(QuestPlayer questPlayer : QuestPlayer.getRegistered()) {
+                this.reset(questPlayer, delay);
             }
 
             instance.getSaveTask().run();
@@ -51,5 +48,15 @@ public class QuestResetService {
                 this.scheduleNextReset(delay);
             }
         };
+    }
+
+    public void reset(QuestPlayer questPlayer, QuestResetDelay delay) {
+
+        questPlayer.removeActiveQuest(delay);
+
+        for(QuestDifficulty difficulty : QuestDifficulty.VALUES) {
+            final int max = instance.getConfig().getInt("max-quests." + delay.name().toLowerCase() + "." + difficulty.name().toLowerCase(), 0);
+            this.instance.getQuestManager().fillQuest(questPlayer, delay, difficulty, max);
+        }
     }
 }

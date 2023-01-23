@@ -2,6 +2,7 @@ package fr.robotv2.robotdailyquests.listeners;
 
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
+import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
 import fr.robotv2.robotdailyquests.enums.QuestType;
 import fr.robotv2.robotdailyquests.quest.Quest;
 import fr.robotv2.robotdailyquests.quest.requirement.SheepRequirement;
@@ -14,7 +15,7 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.Listener;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 
 public abstract class QuestProgressionEnhancer implements Listener {
@@ -51,11 +52,11 @@ public abstract class QuestProgressionEnhancer implements Listener {
 
     public void increaseProgression(Player player, QuestType type, Object target, int amount) {
 
-        final List<ActiveQuest> quests = instance.getQuestManager().getActiveQuests();
+        final Collection<ActiveQuest> quests = QuestPlayer.getQuestPlayer(player.getUniqueId()).getActiveQuests();
 
         for (ActiveQuest activeQuest : quests) {
 
-            if(activeQuest.hasBeenDone(player.getUniqueId()) || activeQuest.hasEnded()) {
+            if(activeQuest.isDone() || activeQuest.hasEnded()) {
                 return;
             }
 

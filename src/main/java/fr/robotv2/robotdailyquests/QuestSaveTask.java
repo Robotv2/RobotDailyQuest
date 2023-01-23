@@ -1,6 +1,7 @@
 package fr.robotv2.robotdailyquests;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class QuestSaveTask extends BukkitRunnable {
@@ -12,13 +13,8 @@ public class QuestSaveTask extends BukkitRunnable {
 
     @Override
     public void run() {
-
-        //Saving loaded quest.
-        instance.getQuestManager().getActiveQuests()
-                .forEach(instance.getDatabaseManager()::saveLoadedQuest);
-
-        //Saving player data.
-        Bukkit.getOnlinePlayers()
-                .forEach(player -> instance.getDatabaseManager().savePlayerData(player.getUniqueId()));
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            instance.getDatabaseManager().savePlayerData(player.getUniqueId());
+        }
     }
 }
