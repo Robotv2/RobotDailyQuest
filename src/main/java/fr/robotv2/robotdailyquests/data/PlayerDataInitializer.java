@@ -48,12 +48,16 @@ public class PlayerDataInitializer implements Listener {
             data = new QuestPlayer(player.getUniqueId());
         }
 
+        final List<ActiveQuest> quests = this.queryActiveQuests(player.getUniqueId());
+
         for(QuestResetDelay delay : QuestResetDelay.VALUES) {
 
-            final List<ActiveQuest> quests = data.getActiveQuests(delay);
+            final List<ActiveQuest> delayQuest = quests.stream().filter(quest -> quest.getResetDelay() == delay).toList();
 
-            if(quests.isEmpty() || quests.get(0).getNextReset() < System.currentTimeMillis()) {
+            if(delayQuest.isEmpty() || delayQuest.get(0).getNextReset() < System.currentTimeMillis()) {
                 this.instance.getResetService().reset(data, delay);
+            } else {
+                delayQuest.forEach(data::addActiveQuest);
             }
         }
 

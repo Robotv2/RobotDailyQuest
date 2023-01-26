@@ -6,6 +6,8 @@ import fr.robotv2.robotdailyquests.enums.QuestType;
 import fr.robotv2.robotdailyquests.util.ColorUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -81,6 +83,11 @@ public class Quest {
         description.add("&7Progression: &e" + progress + "&8/&e" + this.requiredAmount);
 
         meta.setLore(description.stream().map(ColorUtil::color).toList());
+
+        if(progress >= requiredAmount) {
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            meta.addEnchant(Enchantment.ARROW_FIRE, 1, true);
+        }
 
         itemStack.setItemMeta(meta);
         return itemStack;

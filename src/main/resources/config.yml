@@ -1,5 +1,28 @@
+options:
+  disable_spawners_progression: true
+
+all-quests-done:
+  daily:
+    - "[MESSAGE] &aVous venez de terminer toutes les quêtes daily !"
+  weekly:
+    - "[MESSAGE] &aVous venez de terminer toutes les quêtes weekly !"
+  monthly:
+    - "[MESSAGE] &aVous venez de terminer toutes les quêtes monthly !"
+
+cosmetics:
+  title:
+    enabled: true
+    fadeIn: 10 # The default number of ticks for the title to fade in.
+    stay: 70 # The default number of ticks for the title to stay.
+    fadeOut: 20 # The default number of ticks for the title to fade out.
+    text: '&bBravo, %player%'
+    subtitle: '&aQuête terminée: &7%quest-name%&7 &a!' # Leave this field blank if you do not want a subtitle
+
 quest-files:
   - "quests.yml"
+
+disabled_worlds:
+  - "monde_events"
 
 max-quests:
   daily:

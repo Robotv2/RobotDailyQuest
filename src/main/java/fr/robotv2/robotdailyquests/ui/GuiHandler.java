@@ -12,6 +12,8 @@ import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.file.ConfigFile;
 import fr.robotv2.robotdailyquests.util.ColorUtil;
+import fr.robotv2.robotdailyquests.util.PlaceholderUtil;
+import fr.robotv2.robotdailyquests.util.SkullUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -37,7 +39,7 @@ public class GuiHandler {
         this.guiFile.reload();
     }
 
-    private ItemStack getItemFromChar(char character) {
+    private ItemStack getItemFromChar(Player player, char character) {
 
         final ConfigurationSection section = this.guiFile
                 .getConfiguration().getConfigurationSection("quest-gui.items." + String.valueOf(character).toUpperCase());
@@ -50,17 +52,22 @@ public class GuiHandler {
         final String name = section.getString("name");
         final List<String> lore = section.getStringList("lore");
 
-        final ItemStack stack = new ItemStack(material != null ? material : Material.BOOK);
-        final ItemMeta meta = Objects.requireNonNull(stack.getItemMeta());
+        ItemStack result = new ItemStack(material != null ? material : Material.BOOK);
+
+        if(material == Material.PLAYER_HEAD) {
+            result = SkullUtil.getSkull(player.getUniqueId());
+        }
+
+        final ItemMeta meta = Objects.requireNonNull(result.getItemMeta());
 
         if(name != null) {
             meta.setDisplayName(ColorUtil.color(name));
         }
 
-        meta.setLore(lore.stream().map(ColorUtil::color).toList());
-        stack.setItemMeta(meta);
+        meta.setLore(lore.stream().map(ColorUtil::color).map(line -> PlaceholderUtil.parsePlaceholders(player, line)).toList());
+        result.setItemMeta(meta);
 
-        return stack;
+        return result;
     }
 
     public void openMenu(Player player) {
@@ -84,7 +91,7 @@ public class GuiHandler {
         for(String item : items.getKeys(false)) {
 
             final char character = item.toUpperCase().charAt(0);
-            final ItemStack stack = this.getItemFromChar(character);
+            final ItemStack stack = this.getItemFromChar(player, character);
 
             if(stack == null) continue;
             pane.bindItem(character, new GuiItem(stack));
@@ -117,6 +124,7 @@ public class GuiHandler {
                     final int y = slot / 9;
 
                     final int progress = quest.getCurrentProgress();
+
                     staticPane.addItem(new GuiItem(quest.getQuest().getGuiItem(progress)), x, y);
 
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored) {}

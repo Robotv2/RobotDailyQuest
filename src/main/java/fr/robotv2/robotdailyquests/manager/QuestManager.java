@@ -69,8 +69,10 @@ public class QuestManager {
             }
         }
 
+        final long now = System.currentTimeMillis();
+
         for(Quest quest : quests) {
-            final ActiveQuest activeQuest = new ActiveQuest(player.getUniqueId(), quest, System.currentTimeMillis());
+            final ActiveQuest activeQuest = new ActiveQuest(player.getUniqueId(), quest, now);
             player.addActiveQuest(activeQuest);
         }
     }

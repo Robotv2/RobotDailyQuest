@@ -39,7 +39,7 @@ public enum QuestResetDelay {
             case MONTHLY -> time = time.plusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
         };
 
-        time = time.minusMinutes(59).minusSeconds(59).minus(999, ChronoUnit.MICROS);
+        time = time.minusMinutes(59).minusSeconds(59);
         return time;
     }
 

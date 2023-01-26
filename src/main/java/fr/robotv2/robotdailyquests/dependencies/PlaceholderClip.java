@@ -5,6 +5,7 @@ import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.quest.Quest;
+import fr.robotv2.robotdailyquests.util.DateUtil;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -43,14 +44,41 @@ public class PlaceholderClip extends PlaceholderExpansion {
 
         final String[] args = params.split("_");
 
+        if(args.length == 0) {
+            return params;
+        }
+
+        final QuestPlayer questPlayer = QuestPlayer.getQuestPlayer(player);
+
+        if(args[0].equalsIgnoreCase("current")) {
+            final long current = questPlayer.getActiveQuests().stream().filter(quest -> !quest.isDone()).count();
+            return String.valueOf(current);
+        }
+
+        if(args[0].equalsIgnoreCase("done")) {
+            final long current = questPlayer.getActiveQuests().stream().filter(ActiveQuest::isDone).count();
+            return String.valueOf(current);
+        }
+
+        if(args[0].equalsIgnoreCase("next-reset")) {
+            try {
+                final QuestResetDelay delay = QuestResetDelay.valueOf(args[1].toUpperCase());
+                return DateUtil.getDateFormatted(delay.nextResetToEpochMilli());
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return params;
+            }
+        }
+
         ActiveQuest activeQuest;
         Quest quest;
 
         try {
-            final QuestResetDelay delay = QuestResetDelay.valueOf(args[0]);
+            final QuestResetDelay delay = QuestResetDelay.valueOf(args[0].toUpperCase());
             final int number = Integer.parseInt(args[1]);
             activeQuest = QuestPlayer.getQuestPlayer(player).getActiveQuests(delay).get(number);
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            exception.printStackTrace();
             e.printStackTrace();
             return params;
         }

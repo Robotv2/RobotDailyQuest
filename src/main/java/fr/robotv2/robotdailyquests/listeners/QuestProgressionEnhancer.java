@@ -52,6 +52,10 @@ public abstract class QuestProgressionEnhancer implements Listener {
 
     public void increaseProgression(Player player, QuestType type, Object target, int amount) {
 
+        if(this.isInDisabledWorld(player)) {
+            return;
+        }
+
         final Collection<ActiveQuest> quests = QuestPlayer.getQuestPlayer(player.getUniqueId()).getActiveQuests();
 
         for (ActiveQuest activeQuest : quests) {
@@ -71,5 +75,11 @@ public abstract class QuestProgressionEnhancer implements Listener {
 
             activeQuest.incrementCurrentProgress(player, amount);
         }
+    }
+
+    private boolean isInDisabledWorld(Player player) {
+        return this.instance.getConfig()
+                .getStringList("disabled_worlds")
+                .contains(player.getWorld().getName());
     }
 }

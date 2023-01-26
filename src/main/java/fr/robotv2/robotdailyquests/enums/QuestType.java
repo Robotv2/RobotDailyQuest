@@ -25,4 +25,6 @@ public enum QuestType {
 
     CUSTOM_MOBS,
     ;
+
+    public static QuestType[] VALUES = QuestType.values();
 }
