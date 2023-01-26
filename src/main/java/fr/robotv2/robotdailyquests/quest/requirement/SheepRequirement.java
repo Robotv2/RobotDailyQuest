@@ -2,6 +2,7 @@ package fr.robotv2.robotdailyquests.quest.requirement;
 
 import fr.robotv2.robotdailyquests.quest.Quest;
 import org.bukkit.DyeColor;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
 
 public class SheepRequirement extends QuestRequirement<Sheep> {
@@ -22,7 +23,12 @@ public class SheepRequirement extends QuestRequirement<Sheep> {
 
     @Override
     public boolean isTarget(Sheep sheep) {
-        return color != null && sheep.getColor() == color;
+
+        if (this.getColor() != null) {
+            return this.getColor() == sheep.getColor();
+        }
+
+        return new StringQuestRequirement(this.getQuest()).isTarget(EntityType.SHEEP.name());
     }
 
     public DyeColor getColor() {

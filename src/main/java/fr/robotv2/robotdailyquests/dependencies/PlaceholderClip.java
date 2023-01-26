@@ -51,6 +51,7 @@ public class PlaceholderClip extends PlaceholderExpansion {
             final int number = Integer.parseInt(args[1]);
             activeQuest = QuestPlayer.getQuestPlayer(player).getActiveQuests(delay).get(number);
         } catch (Exception e) {
+            e.printStackTrace();
             return params;
         }
 

@@ -17,6 +17,7 @@ import fr.robotv2.robotdailyquests.listeners.quest.QuestListener;
 import fr.robotv2.robotdailyquests.manager.QuestManager;
 import fr.robotv2.robotdailyquests.quest.Quest;
 import fr.robotv2.robotdailyquests.ui.GuiHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -66,7 +67,7 @@ public final class RobotDailyQuest extends JavaPlugin {
             getLogger().info("Hook to Vault !");
         }
 
-        if(getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new PlaceholderClip(this).register();
             getLogger().info("Hook to placeholder API !");
         }
