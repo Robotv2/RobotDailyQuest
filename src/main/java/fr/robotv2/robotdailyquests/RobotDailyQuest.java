@@ -123,8 +123,7 @@ public final class RobotDailyQuest extends JavaPlugin {
     // <- LOADERS ->
 
     private void loadFiles() {
-        this.getConfig().getStringList("quest-files")
-                .forEach(this::loadQuests);
+        this.getConfig().getStringList("quest-files").forEach(this::loadQuests);
     }
 
     private void loadQuests(String resourcePath) {
@@ -132,7 +131,7 @@ public final class RobotDailyQuest extends JavaPlugin {
         final File file = new File(this.getDataFolder(), resourcePath);
 
         if(!file.exists()) {
-            return;
+            throw new NullPointerException("file");
         }
 
         this.loadQuests(YamlConfiguration.loadConfiguration(file));
@@ -141,9 +140,13 @@ public final class RobotDailyQuest extends JavaPlugin {
     private void loadQuests(@NotNull FileConfiguration configuration) {
 
         final ConfigurationSection section = configuration.getConfigurationSection("quests");
-        if(section == null) return;
+
+        if(section == null) {
+            throw new NullPointerException("section");
+        }
 
         for(String key : section.getKeys(false)) {
+
             final ConfigurationSection questSection = section.getConfigurationSection(key);
 
             if(questSection == null) {
@@ -153,6 +156,7 @@ public final class RobotDailyQuest extends JavaPlugin {
             try {
                 final Quest quest = new Quest(questSection);
                 this.getQuestManager().cacheQuest(quest);
+                getLogger().info("La quête " + quest.getId() + ":" + quest.getName() + " a été chargé avec succès.");
             } catch (Exception exception) {
                 getLogger().warning("An error occurred while loading quest: " + key);
                 getLogger().warning("Error message: " + exception.getMessage());

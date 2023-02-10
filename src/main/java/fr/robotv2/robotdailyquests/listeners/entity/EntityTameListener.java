@@ -18,8 +18,6 @@ public class EntityTameListener extends QuestProgressionEnhancer {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onTame(EntityTameEvent event) {
         if (event.getOwner() instanceof Player player) {
-
-            Cow cow;
             this.increaseProgression(player, QuestType.TAME, event.getEntityType(), 1);
         }
     }

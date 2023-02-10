@@ -79,7 +79,6 @@ public class PlaceholderClip extends PlaceholderExpansion {
             activeQuest = QuestPlayer.getQuestPlayer(player).getActiveQuests(delay).get(number);
         } catch (Exception exception) {
             exception.printStackTrace();
-            e.printStackTrace();
             return params;
         }
 

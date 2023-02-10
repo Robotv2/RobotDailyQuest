@@ -20,10 +20,6 @@ public enum QuestType {
     PICKUP,
 
     LAUNCH,
-    FIREBALL_REFLECT,
-    VILLAGER_TRADE,
-
-    CUSTOM_MOBS,
     ;
 
     public static QuestType[] VALUES = QuestType.values();

@@ -13,12 +13,17 @@ public class QuestRewardProcessor {
 
     public void process(Player player, List<String> rewards) {
 
+        System.out.println("Processing rewards: ");
+
         for(String reward : rewards) {
 
             final String prefix = reward.split( " ")[0];
 
             reward = reward.substring(prefix.length() + 1);
             reward = PlaceholderUtil.PLAYER_PLACEHOLDER.apply(player, reward);
+
+            System.out.println(prefix);
+            System.out.println(reward);
 
             switch (prefix) {
                 case "[CONSOLE]" -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), reward);

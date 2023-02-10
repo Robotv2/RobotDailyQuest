@@ -86,11 +86,7 @@ public class QuestPlayer {
     }
 
     public void reset(QuestResetDelay delay) {
-
         this.removeActiveQuest(delay);
-
-
-
     }
 
     // <- ARCHIVES ->

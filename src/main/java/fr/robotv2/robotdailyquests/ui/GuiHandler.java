@@ -127,7 +127,9 @@ public class GuiHandler {
 
                     staticPane.addItem(new GuiItem(quest.getQuest().getGuiItem(progress)), x, y);
 
-                } catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored) {}
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException exception) {
+                    exception.printStackTrace();
+                }
             }
         }
 
