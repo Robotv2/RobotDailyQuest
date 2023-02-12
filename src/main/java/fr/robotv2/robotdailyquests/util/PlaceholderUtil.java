@@ -14,7 +14,7 @@ public class PlaceholderUtil {
 
     public static InternalPlaceholder<Quest> QUEST_PLACEHOLDER = (value, input) -> input
             .replace("%quest-name%", value.getName()
-            .replace("%quest-next-reset%", DateUtil.getDateFormatted(value.getDelay().nextResetToEpochMilli())));
+            .replace("%quest-next-reset%", DateUtil.getDateFormatted(value.getDelay())));
 
     public static InternalPlaceholder<Player> PLAYER_PLACEHOLDER = (value, input) -> input.replace("%player%", value.getName());
 

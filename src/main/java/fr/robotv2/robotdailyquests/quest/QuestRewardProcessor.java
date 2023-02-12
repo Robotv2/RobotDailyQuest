@@ -7,45 +7,49 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.UUID;
 
 public class QuestRewardProcessor {
 
     public void process(Player player, List<String> rewards) {
 
-        System.out.println("Processing rewards: ");
-
         for(String reward : rewards) {
 
             final String prefix = reward.split( " ")[0];
 
-            reward = reward.substring(prefix.length() + 1);
+            reward = reward.substring(prefix.length() + 1).trim();
             reward = PlaceholderUtil.PLAYER_PLACEHOLDER.apply(player, reward);
 
-            System.out.println(prefix);
-            System.out.println(reward);
-
             switch (prefix) {
-                case "[CONSOLE]" -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), reward);
-                case "[PLAYER]" -> Bukkit.dispatchCommand(player, reward);
+
+                case "CLOSE" -> {
+                    player.closeInventory();
+                }
+
+                case "[CONSOLE]" -> {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), reward);
+                }
+
+                case "[PLAYER]" -> {
+                    Bukkit.dispatchCommand(player, reward);
+                }
 
                 case "[MONEY]" -> {
-                    final double bal = Double.parseDouble(reward.trim());
+                    final double bal = Double.parseDouble(reward);
                     VaultAPI.giveMoney(player, bal);
                 }
 
                 case "[EXP_LEVEL]" -> {
-                    final int level = Integer.parseInt(reward.trim());
+                    final int level = Integer.parseInt(reward);
                     player.giveExpLevels(level);
                 }
 
                 case "[EXP_POINTS]" -> {
-                    final int points = Integer.parseInt(reward.trim());
+                    final int points = Integer.parseInt(reward);
                     player.giveExp(points);
                 }
 
                 case "[MESSAGE]" -> {
-                    final String message = ColorUtil.color(reward).trim();
+                    final String message = ColorUtil.color(reward);
                     player.sendMessage(message);
                 }
             }

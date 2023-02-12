@@ -83,7 +83,8 @@ public class GuiHandler {
 
         gui.setOnGlobalClick(event -> event.setCancelled(true));
 
-        final Pattern pattern = new Pattern(section.getStringList("pattern").toArray(new String[0]));
+        final List<String> sectionList = section.getStringList("pattern");
+        final Pattern pattern = new Pattern(sectionList.toArray(new String[0]));
         final PatternPane pane = new PatternPane(0, 0, 9, row, pattern);
 
         final ConfigurationSection items = Objects.requireNonNull(section.getConfigurationSection("items"));
@@ -93,7 +94,10 @@ public class GuiHandler {
             final char character = item.toUpperCase().charAt(0);
             final ItemStack stack = this.getItemFromChar(player, character);
 
-            if(stack == null) continue;
+            if(stack == null) {
+                continue;
+            }
+
             pane.bindItem(character, new GuiItem(stack));
         }
 

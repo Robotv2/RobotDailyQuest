@@ -20,6 +20,7 @@ public enum QuestType {
     PICKUP,
 
     LAUNCH,
+    EXP_POINTS
     ;
 
     public static QuestType[] VALUES = QuestType.values();

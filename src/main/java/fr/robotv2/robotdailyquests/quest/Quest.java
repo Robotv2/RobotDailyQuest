@@ -37,7 +37,9 @@ public class Quest {
         this.id = section.getName();
         this.name = section.getString("name");
         this.description = section.getStringList("description");
-        this.material = Material.matchMaterial(section.getString("menu_item", "BOOK"));
+
+        final String material = section.getString("menu_item", "BOOK");
+        this.material = Objects.requireNonNull(Material.matchMaterial(material), material + " isn't a valid material.");
 
         this.type = QuestType.valueOf(section.getString("quest_type"));
         this.difficulty = QuestDifficulty.valueOf(section.getString("quest_difficulty"));
@@ -78,18 +80,19 @@ public class Quest {
         final List<String> description = new ArrayList<>(this.description);
 
         meta.setDisplayName(ColorUtil.color(this.name));
-
         description.add(" ");
-        description.add("&7Progression: &e" + progress + "&8/&e" + this.requiredAmount);
-
-        meta.setLore(description.stream().map(ColorUtil::color).toList());
 
         if(progress >= requiredAmount) {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             meta.addEnchant(Enchantment.ARROW_FIRE, 1, true);
+            description.add("&cTerminée");
+        } else {
+            description.add("&7Progression: &e" + progress + "&8/&e" + this.requiredAmount);
         }
 
+        meta.setLore(description.stream().map(ColorUtil::color).toList());
         itemStack.setItemMeta(meta);
+
         return itemStack;
     }
 

@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public abstract class QuestProgressionEnhancer implements Listener {
 
-    private final RobotDailyQuest instance;
+    protected final RobotDailyQuest instance;
     public QuestProgressionEnhancer(RobotDailyQuest instance) {
         this.instance = instance;
     }
@@ -31,11 +31,15 @@ public abstract class QuestProgressionEnhancer implements Listener {
 
     private boolean isTarget(Quest quest, Object target, Objects... objects) {
 
+        if(target == null) {
+            return true;
+        }
+
         if(target instanceof Villager villager) {
             return new VillagerQuestRequirement(quest).isTarget(villager);
         }
 
-        if(quest.getType() == QuestType.SHEAR && target instanceof Sheep sheep) {
+        if(target instanceof Sheep sheep) {
             return new SheepRequirement(quest).isTarget(sheep);
         }
 

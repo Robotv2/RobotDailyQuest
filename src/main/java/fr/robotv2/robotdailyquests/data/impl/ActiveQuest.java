@@ -93,14 +93,13 @@ public class ActiveQuest implements java.io.Serializable {
         final UUID playerUUID = player.getUniqueId();
         final Quest quest = this.getQuest();
 
-        final int current = this.getCurrentProgress() + amount;
-        this.setCurrentProgress(current);
+        this.setCurrentProgress(this.getCurrentProgress() + amount);
 
         if(quest == null) return;
 
         Bukkit.getPluginManager().callEvent(new QuestIncrementEvent(player, this, amount));
 
-        if(current >= quest.getRequiredAmount()) {
+        if(this.getCurrentProgress() >= quest.getRequiredAmount()) {
 
             this.done();
             QuestPlayer.getQuestPlayer(playerUUID).incrementQuestAchieved(quest);

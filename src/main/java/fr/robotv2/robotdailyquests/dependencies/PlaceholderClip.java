@@ -50,23 +50,36 @@ public class PlaceholderClip extends PlaceholderExpansion {
 
         final QuestPlayer questPlayer = QuestPlayer.getQuestPlayer(player);
 
-        if(args[0].equalsIgnoreCase("current")) {
-            final long current = questPlayer.getActiveQuests().stream().filter(quest -> !quest.isDone()).count();
-            return String.valueOf(current);
-        }
+        switch (args[0].toLowerCase()) {
 
-        if(args[0].equalsIgnoreCase("done")) {
-            final long current = questPlayer.getActiveQuests().stream().filter(ActiveQuest::isDone).count();
-            return String.valueOf(current);
-        }
+            case "current" -> {
+                final long current = questPlayer.getActiveQuests().stream().filter(quest -> !quest.isDone()).count();
+                return String.valueOf(current);
+            }
 
-        if(args[0].equalsIgnoreCase("next-reset")) {
-            try {
-                final QuestResetDelay delay = QuestResetDelay.valueOf(args[1].toUpperCase());
-                return DateUtil.getDateFormatted(delay.nextResetToEpochMilli());
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                return params;
+            case "done" -> {
+                final long current = questPlayer.getActiveQuests().stream().filter(ActiveQuest::isDone).count();
+                return String.valueOf(current);
+            }
+
+            case "next-reset" -> {
+                try {
+                    final QuestResetDelay delay = QuestResetDelay.valueOf(args[1].toUpperCase());
+                    return DateUtil.getDateFormatted(delay);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                    return params;
+                }
+            }
+
+            case "time-remaining" -> {
+                try {
+                    final QuestResetDelay delay = QuestResetDelay.valueOf(args[1].toUpperCase());
+                    return DateUtil.getTimeUntilFormatted(delay);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                    return params;
+                }
             }
         }
 

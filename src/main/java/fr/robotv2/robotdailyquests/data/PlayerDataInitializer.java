@@ -5,6 +5,7 @@ import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
+import fr.robotv2.robotdailyquests.util.ColorUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,7 +38,6 @@ public class PlayerDataInitializer implements Listener {
         }
     }
 
-
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
 
@@ -62,6 +62,12 @@ public class PlayerDataInitializer implements Listener {
         }
 
         QuestPlayer.registerQuestPlayer(data);
+        this.instance.debug("Les données du joueur %s ont été chargées avec succès.", player.getName());
+
+        if(data.getActiveQuests().stream().anyMatch(quest -> !quest.isDone())) {
+            final String message = ColorUtil.color(this.instance.getConfig().getString("cosmetics.join-message", "&aVous avez des quêtes disponibles."));
+            player.sendMessage(message);
+        }
     }
 
     @EventHandler

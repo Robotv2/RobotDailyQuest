@@ -1,6 +1,7 @@
 package fr.robotv2.robotdailyquests.events;
 
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
+import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,10 @@ public class DelayQuestDoneEvent extends QuestEvent {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public QuestPlayer getQuestPlayer() {
+        return QuestPlayer.getQuestPlayer(player);
     }
 
     public QuestResetDelay getDelay() {

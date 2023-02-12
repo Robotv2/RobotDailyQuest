@@ -6,7 +6,6 @@ import fr.robotv2.robotdailyquests.data.PlayerDataInitializer;
 import fr.robotv2.robotdailyquests.data.QuestDatabaseManager;
 import fr.robotv2.robotdailyquests.dependencies.PlaceholderClip;
 import fr.robotv2.robotdailyquests.dependencies.VaultAPI;
-import fr.robotv2.robotdailyquests.importer.QuestImporterManager;
 import fr.robotv2.robotdailyquests.listeners.GlitchChecker;
 import fr.robotv2.robotdailyquests.listeners.block.BlockBreakListener;
 import fr.robotv2.robotdailyquests.listeners.block.BlockPlaceListener;
@@ -36,7 +35,6 @@ public final class RobotDailyQuest extends JavaPlugin {
     private QuestResetService service;
     private GlitchChecker glitchChecker;
     private QuestSaveTask saveTask;
-    private QuestImporterManager questImporterManager;
 
     private GuiHandler guiHandler;
 
@@ -71,8 +69,6 @@ public final class RobotDailyQuest extends JavaPlugin {
             new PlaceholderClip(this).register();
             getLogger().info("Hook to placeholder API !");
         }
-
-        this.questImporterManager = new QuestImporterManager(this);
     }
 
     @Override
@@ -116,8 +112,10 @@ public final class RobotDailyQuest extends JavaPlugin {
         return this.guiHandler;
     }
 
-    public QuestImporterManager getQuestImporterManager() {
-        return this.questImporterManager;
+    public void debug(String message, Object... objects) {
+        if(this.getConfig().getBoolean("options.debug")) {
+            getLogger().info("[DEBUG] " + String.format(message, objects));
+        }
     }
 
     // <- LOADERS ->
@@ -156,7 +154,6 @@ public final class RobotDailyQuest extends JavaPlugin {
             try {
                 final Quest quest = new Quest(questSection);
                 this.getQuestManager().cacheQuest(quest);
-                getLogger().info("La quête " + quest.getId() + ":" + quest.getName() + " a été chargé avec succès.");
             } catch (Exception exception) {
                 getLogger().warning("An error occurred while loading quest: " + key);
                 getLogger().warning("Error message: " + exception.getMessage());
@@ -216,6 +213,6 @@ public final class RobotDailyQuest extends JavaPlugin {
 
     private void loadCommandHandler() {
         final BukkitCommandHandler handler = BukkitCommandHandler.create(this);
-        handler.register(new QuestCommand(this));
+        new QuestCommand(handler, this);
     }
 }

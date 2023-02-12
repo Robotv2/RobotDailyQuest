@@ -13,8 +13,6 @@ public class QuestSaveTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        for(Player player : Bukkit.getOnlinePlayers()) {
-            instance.getDatabaseManager().savePlayerData(player.getUniqueId());
-        }
+        Bukkit.getOnlinePlayers().forEach(player -> this.instance.getDatabaseManager().savePlayerData(player.getUniqueId()));
     }
 }
