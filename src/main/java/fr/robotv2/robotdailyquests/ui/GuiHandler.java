@@ -11,6 +11,7 @@ import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.file.ConfigFile;
+import fr.robotv2.robotdailyquests.quest.QuestRewardProcessor;
 import fr.robotv2.robotdailyquests.util.ColorUtil;
 import fr.robotv2.robotdailyquests.util.PlaceholderUtil;
 import fr.robotv2.robotdailyquests.util.SkullUtil;
@@ -39,7 +40,7 @@ public class GuiHandler {
         this.guiFile.reload();
     }
 
-    private ItemStack getItemFromChar(Player player, char character) {
+    private GuiItem getItemFromChar(Player player, char character) {
 
         final ConfigurationSection section = this.guiFile
                 .getConfiguration().getConfigurationSection("quest-gui.items." + String.valueOf(character).toUpperCase());
@@ -67,7 +68,14 @@ public class GuiHandler {
         meta.setLore(lore.stream().map(ColorUtil::color).map(line -> PlaceholderUtil.parsePlaceholders(player, line)).toList());
         result.setItemMeta(meta);
 
-        return result;
+        final GuiItem item = new GuiItem(result);
+        final List<String> actions = section.getStringList("on-click");
+
+        if(!actions.isEmpty()) {
+            item.setAction((ignored -> new QuestRewardProcessor().process(player, actions)));
+        }
+
+        return item;
     }
 
     public void openMenu(Player player) {
@@ -92,13 +100,13 @@ public class GuiHandler {
         for(String item : items.getKeys(false)) {
 
             final char character = item.toUpperCase().charAt(0);
-            final ItemStack stack = this.getItemFromChar(player, character);
+            final GuiItem stack = this.getItemFromChar(player, character);
 
             if(stack == null) {
                 continue;
             }
 
-            pane.bindItem(character, new GuiItem(stack));
+            pane.bindItem(character, stack);
         }
 
         final StaticPane staticPane = new StaticPane(0, 0, 9, row, Pane.Priority.HIGH);

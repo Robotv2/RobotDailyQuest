@@ -8,6 +8,7 @@ import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.events.DelayQuestResetEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.time.ZoneOffset;
@@ -44,7 +45,7 @@ public class QuestResetService {
             }
 
             for(QuestPlayer questPlayer : QuestPlayer.getRegistered()) {
-                this.reset(questPlayer, delay);
+                this.reset(questPlayer.getUniqueId(), delay, false);
             }
 
             instance.getSaveTask().run();
@@ -57,32 +58,38 @@ public class QuestResetService {
         };
     }
 
-    public void reset(QuestPlayer questPlayer, QuestResetDelay delay) {
-
-        questPlayer.removeActiveQuest(delay);
-
-        for(QuestDifficulty difficulty : QuestDifficulty.VALUES) {
-            final int max = instance.getConfig().getInt("max-quests." + delay.name().toLowerCase() + "." + difficulty.name().toLowerCase(), 0);
-            this.instance.getQuestManager().fillQuest(questPlayer, delay, difficulty, max);
-        }
+    public void reset(UUID player, QuestResetDelay delay) {
+        this.reset(player, delay, true);
     }
 
-    public void resetOffline(OfflinePlayer target, QuestResetDelay delay) {
+    public void reset(UUID player, QuestResetDelay delay, boolean removeFromDatabase) {
 
-        final UUID uuid = target.getUniqueId();
-
-        // Checking if really offline.
-        if(target.isOnline()) {
-            this.reset(QuestPlayer.getQuestPlayer(uuid), delay);
-            return;
+        if(removeFromDatabase) {
+            this.removeQuestFromDatabase(player, delay);
         }
 
+        final QuestPlayer questPlayer = QuestPlayer.getQuestPlayer(player);
+
+        if(questPlayer != null) {
+
+            questPlayer.removeActiveQuest(delay);
+
+            for(QuestDifficulty difficulty : QuestDifficulty.VALUES) {
+                final int max = instance.getConfig().getInt("max-quests." + delay.name().toLowerCase() + "." + difficulty.name().toLowerCase(), 0);
+                this.instance.getQuestManager().fillQuest(questPlayer, delay, difficulty, max);
+            }
+        }
+
+        this.instance.debug("The quests of a player (%s) has been reset.", player.toString());
+    }
+
+    private void removeQuestFromDatabase(UUID playerUUID, QuestResetDelay delay) {
         try {
             final DeleteBuilder<ActiveQuest, Integer> builder = instance.getDatabaseManager().getActiveQuestData().getDao().deleteBuilder();
-            builder.setWhere(builder.where().eq("quest-delay-type", delay).and().eq("owner", uuid));
+            builder.setWhere(builder.where().eq("quest-delay-type", delay).and().eq("owner", playerUUID));
             builder.delete();
         } catch (SQLException e) {
-            instance.getLogger().warning(String.format("An error occurred while deleting loaded quests %s for player %s", delay.name(), target.getName()));
+            instance.getLogger().warning(String.format("An error occurred while deleting loaded quests %s for player %s", delay.name(), playerUUID.toString()));
             e.printStackTrace();
         }
     }

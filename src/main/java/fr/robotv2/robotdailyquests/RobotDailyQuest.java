@@ -12,6 +12,7 @@ import fr.robotv2.robotdailyquests.listeners.block.BlockPlaceListener;
 import fr.robotv2.robotdailyquests.listeners.block.HarvestBlockListener;
 import fr.robotv2.robotdailyquests.listeners.entity.*;
 import fr.robotv2.robotdailyquests.listeners.item.*;
+import fr.robotv2.robotdailyquests.listeners.player.PlayerExpListener;
 import fr.robotv2.robotdailyquests.listeners.quest.QuestListener;
 import fr.robotv2.robotdailyquests.manager.QuestManager;
 import fr.robotv2.robotdailyquests.quest.Quest;
@@ -57,7 +58,7 @@ public final class RobotDailyQuest extends JavaPlugin {
         this.loadCommandHandler();
 
         this.loadDatabaseManager();
-        this.saveTask = new QuestSaveTask(this);
+        this.saveTask = new QuestSaveTask(this.questDatabaseManager);
         this.saveTask.runTaskTimer(this, 60 * 20 * 5, 60 * 20 * 5);
         this.service = new QuestResetService(this);
 
@@ -193,6 +194,10 @@ public final class RobotDailyQuest extends JavaPlugin {
         pm.registerEvents(new PlayerCraftListener(this), this);
         pm.registerEvents(new PlayerEnchantItemListener(this), this);
         pm.registerEvents(new PlayerPickupListener(this), this);
+
+        // player
+
+        pm.registerEvents(new PlayerExpListener(this), this);
 
         // quest
         pm.registerEvents(new QuestListener(this), this);

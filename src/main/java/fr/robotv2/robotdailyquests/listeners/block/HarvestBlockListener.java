@@ -3,23 +3,32 @@ package fr.robotv2.robotdailyquests.listeners.block;
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import fr.robotv2.robotdailyquests.enums.QuestType;
 import fr.robotv2.robotdailyquests.listeners.QuestProgressionEnhancer;
+import fr.robotv2.robotdailyquests.listeners.custom.MultipleCropsBreakEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
-
-/**
- * @author Ordwen - https://github.com/Ordwen
- */
+import java.util.List;
+import java.util.Objects;
 
 public class HarvestBlockListener extends QuestProgressionEnhancer {
 
@@ -31,23 +40,55 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
         Material filter(Material material);
     }
 
-    private void handleCrops(Player player, BlockData data, Collection<ItemStack> stacks, CropFilter filter) {
+    private void checkAboveBlock(Player player, Block initial) {
+        if(initial.getType() == Material.BAMBOO || initial.getType() == Material.SUGAR_CANE) {
+
+            final List<Block> blocks = new ArrayList<>();
+            Block above = initial.getRelative(BlockFace.UP);
+
+            while(above.getType() == Material.BAMBOO || above.getType()== Material.SUGAR_CANE) {
+                blocks.add(above);
+                above = above.getRelative(BlockFace.UP);
+            }
+
+            final MultipleCropsBreakEvent multipleCropsBreakEvent = new MultipleCropsBreakEvent(player, initial.getType(), blocks);
+            Bukkit.getPluginManager().callEvent(multipleCropsBreakEvent);
+        }
+    }
+
+    private void handleCrops(Player player, BlockData data, Collection<ItemStack> stacks, @Nullable CropFilter filter) {
 
         if(!(data instanceof Ageable ageable) || ageable.getAge() != ageable.getMaximumAge()) {
             return;
         }
 
-        final Material material = filter.filter(data.getMaterial());
+        final Material material = filter != null ? filter.filter(data.getMaterial()) : null;
         final int amount = stacks.stream()
                 .filter(stack -> stack.getType() == material)
                 .mapToInt(ItemStack::getAmount)
                 .sum();
 
-        this.instance.debug("BlockBreakEvent - %s %d", material.name(), amount);
         this.increaseProgression(player, QuestType.FARMING, material, amount);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
+    public void onMultipleCropsBreak(MultipleCropsBreakEvent event) {
+
+        final Player player = event.getPlayer();
+        final List<ItemStack> stacks = new ArrayList<>();
+
+        event.getBlocks().forEach(block -> stacks.addAll(block.getDrops()));
+
+        final int amount = stacks.stream()
+                .filter(stack -> stack.getType() == event.getMaterial())
+                .mapToInt(ItemStack::getAmount)
+                .sum();
+
+
+        this.increaseProgression(player, QuestType.FARMING, event.getMaterial(), amount);
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerHarvestBlock(PlayerHarvestBlockEvent event) {
 
         final CropFilter filter = material -> switch (material) {
@@ -74,6 +115,8 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
             case SWEET_BERRY_BUSH -> material = Material.SWEET_BERRIES;
             default -> material;
         };
+
+        this.checkAboveBlock(event.getPlayer(), event.getBlock());
 
         this.handleCrops(
                 event.getPlayer(),

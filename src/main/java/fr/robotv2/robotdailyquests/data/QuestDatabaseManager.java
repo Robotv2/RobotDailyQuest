@@ -3,6 +3,7 @@ package fr.robotv2.robotdailyquests.data;
 import com.j256.ormlite.support.ConnectionSource;
 import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -27,8 +28,11 @@ public class QuestDatabaseManager {
         return this.playerQuestData;
     }
 
-    public void savePlayerData(UUID playerUUID) {
-        final QuestPlayer data = QuestPlayer.getQuestPlayer(playerUUID);
+    public void saveData(UUID playerUUID) {
+        this.saveData(QuestPlayer.getQuestPlayer(playerUUID));
+    }
+
+    public void saveData(@Nullable QuestPlayer data) {
 
         if(data == null) {
             return;

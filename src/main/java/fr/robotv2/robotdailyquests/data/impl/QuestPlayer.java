@@ -60,10 +60,6 @@ public class QuestPlayer {
         this.quests.add(activeQuest);
     }
 
-    public void removeActiveQuest(ActiveQuest activeQuest) {
-        this.quests.remove(activeQuest);
-    }
-
     public void removeActiveQuest(QuestResetDelay delay) {
         this.quests.removeIf(quest -> quest.getResetDelay() == delay);
     }
@@ -76,10 +72,6 @@ public class QuestPlayer {
         return quests.stream()
                 .filter(quest -> quest.getResetDelay() == delay)
                 .toList();
-    }
-
-    public void reset(QuestResetDelay delay) {
-        this.removeActiveQuest(delay);
     }
 
     // <- ARCHIVES ->

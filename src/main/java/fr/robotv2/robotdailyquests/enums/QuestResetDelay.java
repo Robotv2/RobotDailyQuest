@@ -25,6 +25,7 @@ public enum QuestResetDelay {
     }
 
     public LocalDateTime nextReset() {
+
         LocalDateTime time = LocalDateTime.now();
 
         switch (this) {

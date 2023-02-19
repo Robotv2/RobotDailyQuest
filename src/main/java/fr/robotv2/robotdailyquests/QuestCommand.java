@@ -57,7 +57,7 @@ public class QuestCommand {
 
             for (QuestResetDelay value : QuestResetDelay.VALUES) {
                 if(target != null) {
-                    instance.getResetService().resetOffline(target, value);
+                    instance.getResetService().reset(target.getUniqueId(), value);
                 } else {
                     instance.getResetService().getResetRunnable(value, false).run();
                 }

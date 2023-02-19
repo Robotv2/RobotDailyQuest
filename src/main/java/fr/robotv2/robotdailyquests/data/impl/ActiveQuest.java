@@ -8,6 +8,7 @@ import fr.robotv2.robotdailyquests.events.QuestDoneEvent;
 import fr.robotv2.robotdailyquests.events.QuestIncrementEvent;
 import fr.robotv2.robotdailyquests.quest.Quest;
 import fr.robotv2.robotdailyquests.quest.QuestRewardProcessor;
+import fr.robotv2.robotdailyquests.util.DateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +49,12 @@ public class ActiveQuest implements java.io.Serializable {
         this.questId = quest.getId();
         this.delay = quest.getDelay();
         this.startTimeStamp = startTimeStamp;
+
         this.nextReset = quest.getDelay().nextResetToEpochMilli();
+        RobotDailyQuest.get().debug("New Quest - %s | %s",
+                quest.getDelay(),
+                DateUtil.getDateFormatted(this.nextReset)
+        );
     }
 
     public long getStartTimeStamp() {
@@ -73,7 +79,7 @@ public class ActiveQuest implements java.io.Serializable {
     }
 
     public boolean isDone() {
-        return done;
+        return this.done;
     }
 
     public void done() {

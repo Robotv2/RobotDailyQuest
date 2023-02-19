@@ -81,7 +81,7 @@ public class QuestListener implements Listener {
             return;
         }
 
-        final String message = "&f" + quest.getName() + " &8| &e" + event.getPlayerProgression() + "&7/&e" + event.getAmountRequired();
+        final String message = "&f" + quest.getName() + "&r &8| &e" + event.getPlayerCurrentProgress() + "&7/&e" + event.getAmountRequired();
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ColorUtil.color(message)));
     }
 

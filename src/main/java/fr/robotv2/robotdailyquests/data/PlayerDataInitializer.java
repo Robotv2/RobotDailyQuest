@@ -11,18 +11,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
-public class PlayerDataInitializer implements Listener {
-
-    private final RobotDailyQuest instance;
-    public PlayerDataInitializer(RobotDailyQuest instance) {
-        this.instance = instance;
-    }
+public record PlayerDataInitializer(RobotDailyQuest instance) implements Listener {
 
     private List<ActiveQuest> queryActiveQuests(UUID playerUUID) {
 
@@ -38,42 +35,49 @@ public class PlayerDataInitializer implements Listener {
         }
     }
 
+    private void loadQuests(@NotNull QuestPlayer data) {
+        Objects.requireNonNull(data);
+
+        final List<ActiveQuest> quests = this.queryActiveQuests(data.getUniqueId());
+
+        for (QuestResetDelay delay : QuestResetDelay.VALUES) {
+
+            final List<ActiveQuest> delayQuest = quests.stream().filter(quest -> quest.getResetDelay() == delay).toList();
+
+            if (delayQuest.isEmpty() || System.currentTimeMillis() > delayQuest.get(0).getNextReset()) {
+                this.instance.getResetService().reset(data.getUniqueId(), delay);
+            } else {
+                delayQuest.forEach(data::addActiveQuest);
+            }
+        }
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
 
         final Player player = event.getPlayer();
         QuestPlayer data = instance.getDatabaseManager().getPlayerQuestData().get(player.getUniqueId());
 
-        if(data == null) {
+        if (data == null) {
             data = new QuestPlayer(player.getUniqueId());
         }
 
-        final List<ActiveQuest> quests = this.queryActiveQuests(player.getUniqueId());
-
-        for(QuestResetDelay delay : QuestResetDelay.VALUES) {
-
-            final List<ActiveQuest> delayQuest = quests.stream().filter(quest -> quest.getResetDelay() == delay).toList();
-
-            if(delayQuest.isEmpty() || delayQuest.get(0).getNextReset() < System.currentTimeMillis()) {
-                this.instance.getResetService().reset(data, delay);
-            } else {
-                delayQuest.forEach(data::addActiveQuest);
-            }
-        }
-
         QuestPlayer.registerQuestPlayer(data);
-        this.instance.debug("Les données du joueur %s ont été chargées avec succès.", player.getName());
+        this.loadQuests(data);
 
-        if(data.getActiveQuests().stream().anyMatch(quest -> !quest.isDone())) {
+        if (data.getActiveQuests().stream().anyMatch(quest -> !quest.isDone())) {
             final String message = ColorUtil.color(this.instance.getConfig().getString("cosmetics.join-message", "&aVous avez des quêtes disponibles."));
             player.sendMessage(message);
         }
+
+        this.instance.debug("Les données du joueur %s ont été chargées avec succès.", player.getName());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         final UUID playerUUID = event.getPlayer().getUniqueId();
-        instance.getDatabaseManager().savePlayerData(playerUUID);
+
+        instance.getDatabaseManager().saveData(playerUUID);
         QuestPlayer.unregisterQuestPlayer(playerUUID);
     }
 }

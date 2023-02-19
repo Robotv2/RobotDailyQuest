@@ -29,8 +29,16 @@ public class DateUtil {
 
     public static String getTimeUntilFormatted(QuestResetDelay delay) {
         final Duration duration = Duration.ofMillis(DateUtil.getTimeUntil(delay));
-        final long hours = duration.toHours();
-        final long minutes = duration.minusHours(hours).toMinutes();
-        return String.format("%dh%dmin(s)", hours, minutes);
+
+        final long days = duration.toDays();
+        final long hours = duration.minusDays(days).toHours();
+        final long minutes = duration.minusDays(days).minusHours(hours).toMinutes();
+
+        if(days == 0) {
+            return String.format("%dh%dmin(s)", hours, minutes);
+        } else {
+            return String.format("%dd%dh%dmin(s)", days, hours, minutes);
+        }
+
     }
 }

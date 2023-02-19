@@ -30,8 +30,7 @@ public class OrmData<D, ID> {
         final LinkedList<D> result = new LinkedList<>();
         try (CloseableIterator<D> iterator = getDao().closeableIterator()) {
             while (iterator.hasNext()) {
-                final D value = iterator.next();
-                result.add(value);
+                result.add(iterator.next());
             }
         }
 
@@ -51,7 +50,7 @@ public class OrmData<D, ID> {
 
     public void remove(D data) {
         try {
-            dao.delete(data);
+            this.dao.delete(data);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -59,13 +58,13 @@ public class OrmData<D, ID> {
 
     public void save(D data) {
         try {
-            dao.createOrUpdate(data);
+            this.dao.createOrUpdate(data);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public Dao<D, ID> getDao() {
-        return dao;
+        return this.dao;
     }
 }

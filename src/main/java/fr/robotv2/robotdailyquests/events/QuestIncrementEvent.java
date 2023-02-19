@@ -25,7 +25,7 @@ public class QuestIncrementEvent extends QuestEvent {
         return amount;
     }
 
-    public int getPlayerProgression() {
+    public int getPlayerCurrentProgress() {
         return getQuest().getCurrentProgress();
     }
 

@@ -1,5 +1,6 @@
 package fr.robotv2.robotdailyquests.quest;
 
+import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import fr.robotv2.robotdailyquests.dependencies.VaultAPI;
 import fr.robotv2.robotdailyquests.util.ColorUtil;
 import fr.robotv2.robotdailyquests.util.PlaceholderUtil;
@@ -21,7 +22,7 @@ public class QuestRewardProcessor {
 
             switch (prefix) {
 
-                case "CLOSE" -> {
+                case "[CLOSE]" -> {
                     player.closeInventory();
                 }
 
@@ -51,6 +52,10 @@ public class QuestRewardProcessor {
                 case "[MESSAGE]" -> {
                     final String message = ColorUtil.color(reward);
                     player.sendMessage(message);
+                }
+
+                default -> {
+                    RobotDailyQuest.get().debug("%s isn't a valid prefix.", prefix);
                 }
             }
         }
