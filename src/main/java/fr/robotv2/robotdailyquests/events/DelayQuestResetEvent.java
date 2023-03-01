@@ -5,6 +5,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+// Called when an automatic reset for every player.
+
 public class DelayQuestResetEvent extends Event {
 
     private final static HandlerList HANDLER_LIST = new HandlerList();

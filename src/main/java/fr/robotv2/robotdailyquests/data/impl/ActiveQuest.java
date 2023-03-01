@@ -49,7 +49,6 @@ public class ActiveQuest implements java.io.Serializable {
         this.questId = quest.getId();
         this.delay = quest.getDelay();
         this.startTimeStamp = startTimeStamp;
-
         this.nextReset = quest.getDelay().nextResetToEpochMilli();
         RobotDailyQuest.get().debug("New Quest - %s | %s",
                 quest.getDelay(),
@@ -94,11 +93,15 @@ public class ActiveQuest implements java.io.Serializable {
         this.progress = amount;
     }
 
-    public void incrementCurrentProgress(Player player, int amount) {
+    public void incrementCurrentProgress(int amount) {
 
-        final UUID playerUUID = player.getUniqueId();
+        final Player player = Bukkit.getPlayer(this.getOwner());
+
+        if(player == null || !player.isOnline()) {
+            throw new IllegalStateException("The player you're incrementing progress must be online !");
+        }
+
         final Quest quest = this.getQuest();
-
         this.setCurrentProgress(this.getCurrentProgress() + amount);
 
         if(quest == null) return;
@@ -108,7 +111,7 @@ public class ActiveQuest implements java.io.Serializable {
         if(this.getCurrentProgress() >= quest.getRequiredAmount()) {
 
             this.done();
-            QuestPlayer.getQuestPlayer(playerUUID).incrementQuestAchieved(quest);
+            QuestPlayer.getQuestPlayer(this.getOwner()).incrementQuestAchieved(quest);
             new QuestRewardProcessor().process(player, quest);
 
             Bukkit.getPluginManager().callEvent(new QuestDoneEvent(player, this));
@@ -120,13 +123,7 @@ public class ActiveQuest implements java.io.Serializable {
     }
 
     public boolean hasEnded() {
-        final Quest quest = this.getQuest();
-
-        if (quest == null) {
-            return true;
-        }
-
-        return this.getStartTimeStamp() - System.currentTimeMillis() > quest.getDelay().milli();
+        return System.currentTimeMillis() > this.nextReset;
     }
 
     @Override

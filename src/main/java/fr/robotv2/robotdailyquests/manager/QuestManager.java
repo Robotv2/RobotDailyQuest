@@ -8,13 +8,17 @@ import fr.robotv2.robotdailyquests.quest.Quest;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class QuestManager {
 
     private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
-
     private final Map<String, Quest> quests = new HashMap<>();
 
     public void clearQuests() {

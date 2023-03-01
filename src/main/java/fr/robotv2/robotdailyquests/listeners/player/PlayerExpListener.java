@@ -14,6 +14,6 @@ public class PlayerExpListener extends QuestProgressionEnhancer {
 
     @EventHandler
     public void onExpChange(PlayerExpChangeEvent event) {
-        this.increaseProgression(event.getPlayer(), QuestType.EXP_POINTS, null, event.getAmount());
+        this.increaseProgression(event.getPlayer(), QuestType.EXP_POINTS, (Object) null, event.getAmount());
     }
 }

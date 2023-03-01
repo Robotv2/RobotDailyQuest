@@ -44,7 +44,7 @@ public record PlayerDataInitializer(RobotDailyQuest instance) implements Listene
 
             final List<ActiveQuest> delayQuest = quests.stream().filter(quest -> quest.getResetDelay() == delay).toList();
 
-            if (delayQuest.isEmpty() || System.currentTimeMillis() > delayQuest.get(0).getNextReset()) {
+            if (delayQuest.isEmpty() || delayQuest.get(0).hasEnded()) {
                 this.instance.getResetService().reset(data.getUniqueId(), delay);
             } else {
                 delayQuest.forEach(data::addActiveQuest);

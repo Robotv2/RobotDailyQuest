@@ -39,6 +39,5 @@ public class DateUtil {
         } else {
             return String.format("%dd%dh%dmin(s)", days, hours, minutes);
         }
-
     }
 }

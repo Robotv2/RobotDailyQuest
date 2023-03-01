@@ -14,9 +14,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Objects;
 
 public abstract class QuestProgressionEnhancer implements Listener {
 
@@ -29,7 +31,8 @@ public abstract class QuestProgressionEnhancer implements Listener {
         return this.instance.getGlitchChecker();
     }
 
-    private boolean isTarget(Quest quest, Object target, Objects... objects) {
+    @Contract("_, null -> true")
+    private boolean isTarget(@NotNull Quest quest, @Nullable Object target) {
 
         if(target == null) {
             return true;
@@ -46,11 +49,11 @@ public abstract class QuestProgressionEnhancer implements Listener {
         return new StringQuestRequirement(quest).isTarget(target.toString());
     }
 
-    public void increaseProgression(Player player, QuestType type, EntityType entityType, int amount, Object... objects) {
+    public void increaseProgression(Player player, QuestType type, EntityType entityType, int amount) {
         this.increaseProgression(player, type, entityType.name(), amount);
     }
 
-    public void increaseProgression(Player player, QuestType type, Material material, int amount, Object... objects) {
+    public void increaseProgression(Player player, QuestType type, Material material, int amount) {
         this.increaseProgression(player, type, material.name(), amount);
     }
 
@@ -60,7 +63,7 @@ public abstract class QuestProgressionEnhancer implements Listener {
             return;
         }
 
-        final Collection<ActiveQuest> quests = QuestPlayer.getQuestPlayer(player.getUniqueId()).getActiveQuests();
+        final Collection<ActiveQuest> quests = QuestPlayer.getQuestPlayer(player).getActiveQuests();
 
         for (ActiveQuest activeQuest : quests) {
 
@@ -77,7 +80,7 @@ public abstract class QuestProgressionEnhancer implements Listener {
                 continue;
             }
 
-            activeQuest.incrementCurrentProgress(player, amount);
+            activeQuest.incrementCurrentProgress(amount);
         }
     }
 

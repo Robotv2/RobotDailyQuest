@@ -8,6 +8,7 @@ import fr.robotv2.robotdailyquests.quest.Quest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.io.Serializable;
 import java.util.*;
@@ -56,22 +57,23 @@ public class QuestPlayer {
 
     // <- QUEST RELATED ->
 
-    public void addActiveQuest(ActiveQuest activeQuest) {
-        this.quests.add(activeQuest);
-    }
-
-    public void removeActiveQuest(QuestResetDelay delay) {
-        this.quests.removeIf(quest -> quest.getResetDelay() == delay);
-    }
-
+    @UnmodifiableView
     public List<ActiveQuest> getActiveQuests() {
-        return quests;
+        return Collections.unmodifiableList(this.quests);
     }
 
     public List<ActiveQuest> getActiveQuests(QuestResetDelay delay) {
         return quests.stream()
                 .filter(quest -> quest.getResetDelay() == delay)
                 .toList();
+    }
+
+    public void addActiveQuest(ActiveQuest activeQuest) {
+        this.quests.add(activeQuest);
+    }
+
+    public void removeActiveQuest(QuestResetDelay delay) {
+        this.quests.removeIf(quest -> quest.getResetDelay() == delay);
     }
 
     // <- ARCHIVES ->

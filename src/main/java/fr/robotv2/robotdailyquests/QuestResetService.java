@@ -7,11 +7,10 @@ import fr.robotv2.robotdailyquests.enums.QuestDifficulty;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.events.DelayQuestResetEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.time.ZoneOffset;
+import java.util.EnumSet;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -24,6 +23,7 @@ public class QuestResetService {
 
     public QuestResetService(RobotDailyQuest instance) {
         this.instance = instance;
+        EnumSet.allOf(QuestResetDelay.class).forEach(this::scheduleNextReset);
     }
 
     public void scheduleNextReset(QuestResetDelay delay) {
@@ -75,7 +75,7 @@ public class QuestResetService {
             questPlayer.removeActiveQuest(delay);
 
             for(QuestDifficulty difficulty : QuestDifficulty.VALUES) {
-                final int max = instance.getConfig().getInt("max-quests." + delay.name().toLowerCase() + "." + difficulty.name().toLowerCase(), 0);
+                final int max = delay.getMax(difficulty);
                 this.instance.getQuestManager().fillQuest(questPlayer, delay, difficulty, max);
             }
         }

@@ -16,8 +16,10 @@ public class PlaceholderUtil {
             .replace("%quest-name%", value.getName()
             .replace("%quest-next-reset%", DateUtil.getDateFormatted(value.getDelay())));
 
-    public static InternalPlaceholder<Player> PLAYER_PLACEHOLDER = (value, input) -> input.replace("%player%", value.getName());
+    public static InternalPlaceholder<Player> PLAYER_PLACEHOLDER = (value, input) -> input
+            .replace("%player%", value.getName());
 
+    @FunctionalInterface
     public interface InternalPlaceholder<T> {
         String apply(T value, String input);
     }

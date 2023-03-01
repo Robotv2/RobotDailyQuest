@@ -1,5 +1,7 @@
 package fr.robotv2.robotdailyquests.enums;
 
+import fr.robotv2.robotdailyquests.RobotDailyQuest;
+
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -18,6 +20,12 @@ public enum QuestResetDelay {
     private final int day;
     QuestResetDelay(int day) {
         this.day = day;
+    }
+
+    public int getMax(QuestDifficulty difficulty) {
+        return RobotDailyQuest.get()
+                .getConfig()
+                .getInt("max-quests." + this.name().toLowerCase() + "." + difficulty.name().toLowerCase(), 0);
     }
 
     public long milli() {

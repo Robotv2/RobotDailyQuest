@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class QuestEvent extends Event {
+public abstract class QuestEvent extends Event {
 
     private final static HandlerList HANDLER_LIST = new HandlerList();
 

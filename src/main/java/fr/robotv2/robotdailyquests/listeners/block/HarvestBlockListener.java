@@ -62,7 +62,8 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
             return;
         }
 
-        final Material material = filter != null ? filter.filter(data.getMaterial()) : null;
+        final Material material = filter != null ? filter.filter(data.getMaterial()) : data.getMaterial();
+
         final int amount = stacks.stream()
                 .filter(stack -> stack.getType() == material)
                 .mapToInt(ItemStack::getAmount)
@@ -73,19 +74,13 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onMultipleCropsBreak(MultipleCropsBreakEvent event) {
-
-        final Player player = event.getPlayer();
-        final List<ItemStack> stacks = new ArrayList<>();
-
-        event.getBlocks().forEach(block -> stacks.addAll(block.getDrops()));
-
-        final int amount = stacks.stream()
+        final int amount = event.getBlocks().stream()
+                .flatMap(block -> block.getDrops().stream())
                 .filter(stack -> stack.getType() == event.getMaterial())
                 .mapToInt(ItemStack::getAmount)
                 .sum();
 
-
-        this.increaseProgression(player, QuestType.FARMING, event.getMaterial(), amount);
+        this.increaseProgression(event.getPlayer(), QuestType.FARMING, event.getMaterial(), amount);
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)

@@ -5,6 +5,7 @@ import fr.robotv2.robotdailyquests.data.impl.ActiveQuest;
 import fr.robotv2.robotdailyquests.data.impl.QuestPlayer;
 import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.events.DelayQuestDoneEvent;
+import fr.robotv2.robotdailyquests.events.DelayQuestResetEvent;
 import fr.robotv2.robotdailyquests.events.QuestDoneEvent;
 import fr.robotv2.robotdailyquests.events.QuestIncrementEvent;
 import fr.robotv2.robotdailyquests.quest.Quest;
@@ -93,5 +94,12 @@ public class QuestListener implements Listener {
 
         final List<String> rewards = this.instance.getConfig().getStringList("all-quests-done." + delay.name().toLowerCase());
         new QuestRewardProcessor().process(player, rewards);
+    }
+
+    @EventHandler
+    public void onDelayReset(DelayQuestResetEvent event) {
+        this.instance.debug("---");
+        this.instance.debug("Les quêtes %s ont été réinitialisé avec succés.", event.getDelay());
+        this.instance.debug("---");
     }
 }

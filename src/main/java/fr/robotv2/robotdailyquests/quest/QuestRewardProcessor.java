@@ -17,7 +17,7 @@ public class QuestRewardProcessor {
 
             final String prefix = reward.split( " ")[0];
 
-            reward = reward.substring(prefix.length() + 1).trim();
+            reward = reward.length() == prefix.length() ? reward.trim() : reward.substring(prefix.length() + 1).trim();
             reward = PlaceholderUtil.PLAYER_PLACEHOLDER.apply(player, reward);
 
             switch (prefix) {
