@@ -18,14 +18,21 @@ public class EntityFishListener extends QuestProgressionEnhancer {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onFish(PlayerFishEvent event) {
 
+        if(event.getState() != PlayerFishEvent.State.CAUGHT_ENTITY
+                && event.getState() != PlayerFishEvent.State.CAUGHT_FISH) {
+            return;
+        }
+
         final Entity entity = event.getCaught();
 
         if(entity == null) {
             return;
         }
 
+        this.instance.debug("%s has caught an entity by fishing.");
+
         if(entity instanceof Item item) {
-            this.increaseProgression(event.getPlayer(), QuestType.FISH, item.getType(), 1);
+            this.increaseProgression(event.getPlayer(), QuestType.FISH, item.getItemStack().getType(), 1);
         } else {
             this.increaseProgression(event.getPlayer(), QuestType.FISH, entity.getType(), 1);
         }
