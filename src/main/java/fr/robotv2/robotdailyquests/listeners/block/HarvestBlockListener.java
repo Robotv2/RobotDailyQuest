@@ -74,6 +74,7 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onMultipleCropsBreak(MultipleCropsBreakEvent event) {
+
         final int amount = event.getBlocks().stream()
                 .flatMap(block -> block.getDrops().stream())
                 .filter(stack -> stack.getType() == event.getMaterial())

@@ -68,7 +68,7 @@ public abstract class QuestProgressionEnhancer implements Listener {
         for (ActiveQuest activeQuest : quests) {
 
             if(activeQuest.isDone() || activeQuest.hasEnded()) {
-                return;
+                continue;
             }
 
             final Quest quest = activeQuest.getQuest();
