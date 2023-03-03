@@ -16,7 +16,7 @@ public class PlayerCraftListener extends QuestProgressionEnhancer {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCraft(InventoryClickEvent event) {
 
         if(!(event.getInventory() instanceof CraftingInventory)) {

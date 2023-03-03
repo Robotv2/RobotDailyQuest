@@ -4,6 +4,7 @@ import fr.robotv2.robotdailyquests.enums.QuestResetDelay;
 import fr.robotv2.robotdailyquests.util.DateUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Default;
@@ -65,6 +66,13 @@ public class QuestCommand {
 
             final String message = target != null ? String.format("Vous venez de recharger les quêtes pour le joueur: %s.", target.getName()) : "Vous venez de recharger les quêtes.";
             actor.reply(ChatColor.GREEN + message);
+        }
+
+        @Subcommand("show")
+        @CommandPermission("robotdailyquest.command.show")
+        @AutoComplete("@players")
+        public void onShow(BukkitCommandActor actor, Player target) {
+            instance.getGuiHandler().createQuestGui(target).show(actor.requirePlayer());
         }
     }
 }

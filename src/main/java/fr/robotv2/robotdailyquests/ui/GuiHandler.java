@@ -78,12 +78,12 @@ public class GuiHandler {
         return item;
     }
 
-    public void openMenu(Player player) {
+    public ChestGui createQuestGui(Player target) {
 
         final ConfigurationSection section = this.guiFile.getConfiguration().getConfigurationSection("quest-gui");
 
         if(section == null) {
-            return;
+            throw new NullPointerException("quest-gui");
         }
 
         final int row = section.getInt("row", 5);
@@ -100,7 +100,7 @@ public class GuiHandler {
         for(String item : items.getKeys(false)) {
 
             final char character = item.toUpperCase().charAt(0);
-            final GuiItem stack = this.getItemFromChar(player, character);
+            final GuiItem stack = this.getItemFromChar(target, character);
 
             if(stack == null) {
                 continue;
@@ -114,7 +114,7 @@ public class GuiHandler {
         for(QuestResetDelay delay : QuestResetDelay.VALUES) {
 
             int index = 0;
-            final List<ActiveQuest> quests = QuestPlayer.getQuestPlayer(player).getActiveQuests(delay);
+            final List<ActiveQuest> quests = QuestPlayer.getQuestPlayer(target).getActiveQuests(delay);
 
             if(quests.isEmpty()) {
                 continue;
@@ -147,7 +147,10 @@ public class GuiHandler {
 
         gui.addPane(staticPane);
         gui.addPane(pane);
+        return gui;
+    }
 
-        gui.show(player);
+    public void openMenu(Player player) {
+        this.createQuestGui(player).show(player);
     }
 }

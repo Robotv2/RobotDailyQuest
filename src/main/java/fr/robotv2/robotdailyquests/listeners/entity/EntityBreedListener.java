@@ -14,7 +14,7 @@ public class EntityBreedListener extends QuestProgressionEnhancer {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityBread(EntityBreedEvent event) {
         if (event.getBreeder() instanceof Player player) {
             this.increaseProgression(player, QuestType.BREED, event.getEntityType(), 1);

@@ -122,7 +122,9 @@ public final class RobotDailyQuest extends JavaPlugin {
     // <- LOADERS ->
 
     private void loadFiles() {
-        this.getConfig().getStringList("quest-files").forEach(this::loadQuests);
+        this.getConfig()
+                .getStringList("quest-files")
+                .forEach(this::loadQuests);
     }
 
     private void loadQuests(String resourcePath) {

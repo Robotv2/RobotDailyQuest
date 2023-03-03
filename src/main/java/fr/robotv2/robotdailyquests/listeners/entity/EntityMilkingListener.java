@@ -16,7 +16,7 @@ public class EntityMilkingListener extends QuestProgressionEnhancer {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMilk(PlayerBucketFillEvent event) {
 
         final ItemStack bucket = event.getItemStack();

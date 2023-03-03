@@ -3,32 +3,24 @@ package fr.robotv2.robotdailyquests.listeners.block;
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import fr.robotv2.robotdailyquests.enums.QuestType;
 import fr.robotv2.robotdailyquests.listeners.QuestProgressionEnhancer;
-import fr.robotv2.robotdailyquests.listeners.custom.MultipleCropsBreakEvent;
+import fr.robotv2.robotdailyquests.events.MultipleCropsBreakEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.Bamboo;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDropItemEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 public class HarvestBlockListener extends QuestProgressionEnhancer {
 

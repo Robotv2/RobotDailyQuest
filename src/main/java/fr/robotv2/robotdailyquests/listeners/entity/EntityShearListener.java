@@ -13,7 +13,7 @@ public class EntityShearListener extends QuestProgressionEnhancer {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onShear(PlayerShearEntityEvent event) {
         this.increaseProgression(event.getPlayer(), QuestType.SHEAR, event.getEntity().getType(), 1);
     }

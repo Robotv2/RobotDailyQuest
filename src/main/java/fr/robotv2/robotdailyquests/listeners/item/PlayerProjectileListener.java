@@ -14,7 +14,7 @@ public class PlayerProjectileListener extends QuestProgressionEnhancer {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onProjectile(ProjectileLaunchEvent event) {
 
         if(!(event.getEntity().getShooter() instanceof Player player)) {

@@ -76,6 +76,11 @@ public class QuestPlayer {
         this.quests.removeIf(quest -> quest.getResetDelay() == delay);
     }
 
+    public boolean hasQuest(String questId) {
+        return getActiveQuests().stream()
+                .anyMatch(quest -> quest.getQuestId().equals(questId));
+    }
+
     // <- ARCHIVES ->
 
     public List<PlayerQuestArchive> getArchives() {

@@ -1,4 +1,4 @@
-package fr.robotv2.robotdailyquests.listeners.custom;
+package fr.robotv2.robotdailyquests.events;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
