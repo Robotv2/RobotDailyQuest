@@ -64,7 +64,7 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
         this.increaseProgression(player, QuestType.FARMING, material, amount);
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onMultipleCropsBreak(MultipleCropsBreakEvent event) {
 
         final int amount = event.getBlocks().stream()
@@ -76,11 +76,11 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
         this.increaseProgression(event.getPlayer(), QuestType.FARMING, event.getMaterial(), amount);
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerHarvestBlock(PlayerHarvestBlockEvent event) {
 
         final CropFilter filter = material -> switch (material) {
-            case SWEET_BERRY_BUSH -> material = Material.SWEET_BERRIES;
+            case SWEET_BERRY_BUSH -> Material.SWEET_BERRIES;
             default -> material;
         };
 
@@ -92,15 +92,15 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
         );
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
 
         final CropFilter filter = material -> switch (material) {
-            case POTATOES -> material = Material.POTATO;
-            case CARROTS -> material = Material.CARROT;
-            case BEETROOTS -> material = Material.BEETROOT;
-            case COCOA -> material = Material.COCOA_BEANS;
-            case SWEET_BERRY_BUSH -> material = Material.SWEET_BERRIES;
+            case POTATOES -> Material.POTATO;
+            case CARROTS -> Material.CARROT;
+            case BEETROOTS -> Material.BEETROOT;
+            case COCOA -> Material.COCOA_BEANS;
+            case SWEET_BERRY_BUSH -> Material.SWEET_BERRIES;
             default -> material;
         };
 
