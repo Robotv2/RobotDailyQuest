@@ -64,7 +64,7 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
         this.increaseProgression(player, QuestType.FARMING, material, amount);
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onMultipleCropsBreak(MultipleCropsBreakEvent event) {
 
         final int amount = event.getBlocks().stream()
@@ -76,7 +76,7 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
         this.increaseProgression(event.getPlayer(), QuestType.FARMING, event.getMaterial(), amount);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerHarvestBlock(PlayerHarvestBlockEvent event) {
 
         final CropFilter filter = material -> switch (material) {
@@ -92,7 +92,7 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
         );
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
 
         final CropFilter filter = material -> switch (material) {
