@@ -59,7 +59,7 @@ public final class RobotDailyQuest extends JavaPlugin {
 
         this.loadDatabaseManager();
         this.saveTask = new QuestSaveTask(this.questDatabaseManager);
-        this.saveTask.runTaskTimer(this, 60 * 20 * 5, 60 * 20 * 5);
+        this.saveTask.runTaskTimer(this, 60 * 20 * 5, 60 * 20 * 5); // Every 5 minutes.
         this.service = new QuestResetService(this);
 
         if(VaultAPI.initialize(this)) {

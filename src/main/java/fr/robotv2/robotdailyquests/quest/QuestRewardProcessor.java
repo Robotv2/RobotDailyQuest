@@ -55,7 +55,7 @@ public class QuestRewardProcessor {
                 }
 
                 default -> {
-                    RobotDailyQuest.get().debug("%s isn't a valid prefix.", prefix);
+                    throw new IllegalArgumentException(prefix + " isn't a valid prefix.");
                 }
             }
         }

@@ -2,6 +2,7 @@ package fr.robotv2.robotdailyquests.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -11,6 +12,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class SkullUtil {
+
+    private SkullUtil() {}
 
     private final static Map<UUID, ItemStack> heads = new HashMap<>();
 

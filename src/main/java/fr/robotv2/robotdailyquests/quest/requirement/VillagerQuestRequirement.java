@@ -31,7 +31,7 @@ public class VillagerQuestRequirement extends QuestRequirement<Villager> {
         } else if(this.professionLevel == 0) {
             return this.profession == villager.getProfession();
         } else {
-            return this.professionLevel >= villager.getVillagerLevel() || this.profession == villager.getProfession();
+            return this.professionLevel >= villager.getVillagerLevel() && this.profession == villager.getProfession();
         }
     }
 }
