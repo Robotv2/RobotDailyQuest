@@ -27,7 +27,7 @@ public class QuestResetService {
     }
 
     public void scheduleNextReset(QuestResetDelay delay) {
-        final long period = delay.nextReset().toInstant(ZoneOffset.UTC).toEpochMilli() - System.currentTimeMillis();
+        final long period = delay.nextResetToEpochMilli() - System.currentTimeMillis();
         service.schedule(this.getResetRunnable(delay, true), period, TimeUnit.MILLISECONDS);
     }
 
