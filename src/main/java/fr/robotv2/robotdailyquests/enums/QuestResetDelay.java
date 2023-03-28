@@ -5,7 +5,7 @@ import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 public enum QuestResetDelay {
@@ -46,13 +46,13 @@ public enum QuestResetDelay {
                 time = time.truncatedTo(ChronoUnit.DAYS);
             }
             case MONTHLY -> time = time.plusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
-        };
+        }
 
-        time = time.minusMinutes(59).minusSeconds(59);
+        time = time.plusSeconds(1);  // Just to be sure we're a doing this the right day.
         return time;
     }
 
     public long nextResetToEpochMilli() {
-        return nextReset().toInstant(ZoneOffset.UTC).toEpochMilli();
+        return nextReset().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 }

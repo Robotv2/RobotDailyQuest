@@ -36,7 +36,7 @@ public class GlitchChecker implements Listener {
         return source.hasMetadata(METADATA_KEY);
     }
 
-    /* Listeners */
+    /* { LISTENERS } */
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent event) {
