@@ -55,7 +55,7 @@ public class GlitchChecker implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntitySpawn(SpawnerSpawnEvent event) {
-        if(this.instance.getConfig().getBoolean("disable_spawners_progression")) {
+        if(this.instance.getConfig().getBoolean("options.disable_spawners_progression")) {
             this.mark(event.getEntity());
         }
     }
