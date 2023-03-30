@@ -28,7 +28,7 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
     private final EnumSet<Material> VERTICAL_PROPS = EnumSet.of(
             Material.BAMBOO,
             Material.SUGAR_CANE,
-            Material.KELP,
+            Material.KELP_PLANT,
             Material.CACTUS
     );
 
@@ -47,6 +47,8 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
         }
 
         final List<Block> blocks = new ArrayList<>();
+        blocks.add(initial);
+
         Block above = initial.getRelative(BlockFace.UP);
 
         while(VERTICAL_PROPS.contains(above.getType())) {
