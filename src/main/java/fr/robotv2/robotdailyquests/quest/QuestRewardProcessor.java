@@ -1,6 +1,5 @@
 package fr.robotv2.robotdailyquests.quest;
 
-import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import fr.robotv2.robotdailyquests.dependencies.VaultAPI;
 import fr.robotv2.robotdailyquests.util.ColorUtil;
 import fr.robotv2.robotdailyquests.util.PlaceholderUtil;

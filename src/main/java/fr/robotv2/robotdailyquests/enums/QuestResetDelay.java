@@ -3,7 +3,6 @@ package fr.robotv2.robotdailyquests.enums;
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
 
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -28,10 +27,6 @@ public enum QuestResetDelay {
                 .getInt("max-quests." + this.name().toLowerCase() + "." + difficulty.name().toLowerCase(), 0);
     }
 
-    public long milli() {
-        return Duration.ofDays(day).toMillis();
-    }
-
     public LocalDateTime nextReset() {
 
         LocalDateTime time = LocalDateTime.now();
@@ -40,9 +35,11 @@ public enum QuestResetDelay {
             case DAILY -> time = time.plusDays(this.day).truncatedTo(ChronoUnit.DAYS);
             case WEEKLY -> {
                 time = time.plusDays(this.day);
+
                 while (time.getDayOfWeek() != DayOfWeek.MONDAY) {
                     time = time.minusDays(1);
                 }
+
                 time = time.truncatedTo(ChronoUnit.DAYS);
             }
             case MONTHLY -> time = time.plusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);

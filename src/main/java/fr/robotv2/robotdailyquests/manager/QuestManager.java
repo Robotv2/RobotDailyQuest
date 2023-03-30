@@ -8,12 +8,7 @@ import fr.robotv2.robotdailyquests.quest.Quest;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class QuestManager {
@@ -41,6 +36,7 @@ public class QuestManager {
                 .toList();
     }
 
+    @Nullable
     public Quest getRandomQuest(QuestResetDelay delay, QuestDifficulty difficulty) {
         final List<Quest> quests = this.getQuests(delay, difficulty);
 
