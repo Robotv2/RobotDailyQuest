@@ -2,8 +2,8 @@ package fr.robotv2.robotdailyquests.listeners.block;
 
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
 import fr.robotv2.robotdailyquests.enums.QuestType;
-import fr.robotv2.robotdailyquests.listeners.QuestProgressionEnhancer;
 import fr.robotv2.robotdailyquests.events.MultipleCropsBreakEvent;
+import fr.robotv2.robotdailyquests.listeners.QuestProgressionEnhancer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,9 +20,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 
 public class HarvestBlockListener extends QuestProgressionEnhancer {
+
+    private final EnumSet<Material> VERTICAL_PROPS = EnumSet.of(
+            Material.BAMBOO,
+            Material.SUGAR_CANE,
+            Material.KELP,
+            Material.CACTUS
+    );
 
     public HarvestBlockListener(RobotDailyQuest instance) {
         super(instance);
@@ -33,19 +41,21 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
     }
 
     private void checkAboveBlock(Player player, Block initial) {
-        if(initial.getType() == Material.BAMBOO || initial.getType() == Material.SUGAR_CANE) {
 
-            final List<Block> blocks = new ArrayList<>();
-            Block above = initial.getRelative(BlockFace.UP);
-
-            while(above.getType() == Material.BAMBOO || above.getType()== Material.SUGAR_CANE) {
-                blocks.add(above);
-                above = above.getRelative(BlockFace.UP);
-            }
-
-            final MultipleCropsBreakEvent multipleCropsBreakEvent = new MultipleCropsBreakEvent(player, initial.getType(), blocks);
-            Bukkit.getPluginManager().callEvent(multipleCropsBreakEvent);
+        if(!VERTICAL_PROPS.contains(initial.getType())) {
+            return;
         }
+
+        final List<Block> blocks = new ArrayList<>();
+        Block above = initial.getRelative(BlockFace.UP);
+
+        while(VERTICAL_PROPS.contains(above.getType())) {
+            blocks.add(above);
+            above = above.getRelative(BlockFace.UP);
+        }
+
+        final MultipleCropsBreakEvent multipleCropsBreakEvent = new MultipleCropsBreakEvent(player, initial.getType(), blocks);
+        Bukkit.getPluginManager().callEvent(multipleCropsBreakEvent);
     }
 
     private void handleCrops(Player player, BlockData data, Collection<ItemStack> stacks, @Nullable CropFilter filter) {
@@ -68,6 +78,7 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
     public void onMultipleCropsBreak(MultipleCropsBreakEvent event) {
 
         final int amount = event.getBlocks().stream()
+                .filter(block -> !this.getGlitchChecker().isMarked(block)) // Check if the block isn't placed by the player.
                 .flatMap(block -> block.getDrops().stream())
                 .filter(stack -> stack.getType() == event.getMaterial())
                 .mapToInt(ItemStack::getAmount)
