@@ -36,11 +36,12 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
         super(instance);
     }
 
+    @FunctionalInterface
     private interface CropFilter {
         Material filter(Material material);
     }
 
-    private void checkAboveBlock(Player player, Block initial) {
+    private void checkAboveBlock(Player player, Block initial, @Nullable CropFilter filter) {
 
         if(!VERTICAL_PROPS.contains(initial.getType())) {
             return;
@@ -56,7 +57,9 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
             above = above.getRelative(BlockFace.UP);
         }
 
-        final MultipleCropsBreakEvent multipleCropsBreakEvent = new MultipleCropsBreakEvent(player, initial.getType(), blocks);
+        final Material material = filter != null ? filter.filter(initial.getType()) : initial.getType();
+        final MultipleCropsBreakEvent multipleCropsBreakEvent = new MultipleCropsBreakEvent(player, material, blocks);
+
         Bukkit.getPluginManager().callEvent(multipleCropsBreakEvent);
     }
 
@@ -114,10 +117,11 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
             case BEETROOTS -> Material.BEETROOT;
             case COCOA -> Material.COCOA_BEANS;
             case SWEET_BERRY_BUSH -> Material.SWEET_BERRIES;
+            case KELP_PLANT -> Material.KELP;
             default -> material;
         };
 
-        this.checkAboveBlock(event.getPlayer(), event.getBlock());
+        this.checkAboveBlock(event.getPlayer(), event.getBlock(), filter);
 
         this.handleCrops(
                 event.getPlayer(),

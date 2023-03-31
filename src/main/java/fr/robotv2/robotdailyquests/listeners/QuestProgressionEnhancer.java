@@ -59,6 +59,10 @@ public abstract class QuestProgressionEnhancer implements Listener {
 
     public void increaseProgression(Player player, QuestType type, Object target, int amount) {
 
+        if(amount <= 0) {
+            return;
+        }
+
         if(this.isInDisabledWorld(player)) {
             return;
         }
