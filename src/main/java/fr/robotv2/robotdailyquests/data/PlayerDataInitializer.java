@@ -76,7 +76,6 @@ public record PlayerDataInitializer(RobotDailyQuest instance) implements Listene
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         final UUID playerUUID = event.getPlayer().getUniqueId();
-
         instance.getDatabaseManager().saveData(playerUUID);
         QuestPlayer.unregisterQuestPlayer(playerUUID);
     }

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class SkullUtil {
 
-    private SkullUtil() {}
+    private SkullUtil() { }
 
     private final static Map<UUID, ItemStack> heads = new HashMap<>();
 

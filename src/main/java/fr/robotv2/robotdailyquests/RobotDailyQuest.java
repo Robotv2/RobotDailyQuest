@@ -198,7 +198,6 @@ public final class RobotDailyQuest extends JavaPlugin {
         pm.registerEvents(new PlayerPickupListener(this), this);
 
         // player
-
         pm.registerEvents(new PlayerExpListener(this), this);
 
         // quest

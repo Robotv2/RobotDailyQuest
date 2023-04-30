@@ -25,13 +25,6 @@ import java.util.List;
 
 public class HarvestBlockListener extends QuestProgressionEnhancer {
 
-    private final EnumSet<Material> VERTICAL_PROPS = EnumSet.of(
-            Material.BAMBOO,
-            Material.SUGAR_CANE,
-            Material.KELP_PLANT,
-            Material.CACTUS
-    );
-
     public HarvestBlockListener(RobotDailyQuest instance) {
         super(instance);
     }
@@ -43,7 +36,7 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
 
     private void checkAboveBlock(Player player, Block initial, @Nullable CropFilter filter) {
 
-        if(!VERTICAL_PROPS.contains(initial.getType())) {
+        if(!MultipleCropsBreakEvent.VERTICAL_CROPS.contains(initial.getType())) {
             return;
         }
 
@@ -52,7 +45,7 @@ public class HarvestBlockListener extends QuestProgressionEnhancer {
 
         Block above = initial.getRelative(BlockFace.UP);
 
-        while(VERTICAL_PROPS.contains(above.getType())) {
+        while(MultipleCropsBreakEvent.VERTICAL_CROPS.contains(above.getType())) {
             blocks.add(above);
             above = above.getRelative(BlockFace.UP);
         }

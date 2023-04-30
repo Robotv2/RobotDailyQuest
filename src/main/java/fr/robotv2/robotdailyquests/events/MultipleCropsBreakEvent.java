@@ -7,13 +7,20 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.EnumSet;
 import java.util.List;
 
 /**
  * For now, only detects bamboo and sugarcane breaking.
  */
-
 public class MultipleCropsBreakEvent extends PlayerEvent {
+
+    public static EnumSet<Material> VERTICAL_CROPS = EnumSet.of(
+            Material.BAMBOO,
+            Material.SUGAR_CANE,
+            Material.KELP_PLANT,
+            Material.CACTUS
+    );
 
     private static final HandlerList handlers = new HandlerList();
     private final List<Block> blocks;
