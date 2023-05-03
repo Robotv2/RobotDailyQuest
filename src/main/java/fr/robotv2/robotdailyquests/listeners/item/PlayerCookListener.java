@@ -13,7 +13,7 @@ public class PlayerCookListener extends QuestProgressionEnhancer {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onFurnaceExtract(FurnaceExtractEvent event) {
         this.increaseProgression(event.getPlayer(), QuestType.COOK, event.getItemType(), event.getItemAmount());
     }

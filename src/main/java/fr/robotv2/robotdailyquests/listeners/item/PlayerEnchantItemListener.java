@@ -13,7 +13,7 @@ public class PlayerEnchantItemListener extends QuestProgressionEnhancer {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEnchant(EnchantItemEvent event) {
         this.increaseProgression(event.getEnchanter(), QuestType.ENCHANT, event.getItem().getType(), 1);
     }

@@ -15,7 +15,7 @@ public class EntityKillListener extends QuestProgressionEnhancer {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityKill(EntityDeathEvent event) {
 
         final LivingEntity entity = event.getEntity();

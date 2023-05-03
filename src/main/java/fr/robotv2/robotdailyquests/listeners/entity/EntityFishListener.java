@@ -16,7 +16,7 @@ public class EntityFishListener extends QuestProgressionEnhancer {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onFish(PlayerFishEvent event) {
 
         if(event.getState() != PlayerFishEvent.State.CAUGHT_FISH) {

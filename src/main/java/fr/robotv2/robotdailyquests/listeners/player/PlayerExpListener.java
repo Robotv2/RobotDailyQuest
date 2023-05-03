@@ -13,7 +13,7 @@ public class PlayerExpListener extends QuestProgressionEnhancer {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onExpChange(PlayerExpChangeEvent event) {
         this.increaseProgression(event.getPlayer(), QuestType.EXP_POINTS, (Object) null, event.getAmount());
     }
