@@ -10,9 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumSet;
 import java.util.List;
 
-/**
- * For now, only detects bamboo and sugarcane breaking.
- */
 public class MultipleCropsBreakEvent extends PlayerEvent {
 
     public static EnumSet<Material> VERTICAL_CROPS = EnumSet.of(

@@ -123,7 +123,7 @@ public class ActiveQuest implements java.io.Serializable {
     }
 
     public boolean hasEnded() {
-        return System.currentTimeMillis() > this.nextReset;
+        return System.currentTimeMillis() > this.getNextReset();
     }
 
     @Override

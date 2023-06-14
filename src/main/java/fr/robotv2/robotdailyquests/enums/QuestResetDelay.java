@@ -3,8 +3,10 @@ package fr.robotv2.robotdailyquests.enums;
 import fr.robotv2.robotdailyquests.RobotDailyQuest;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 
 public enum QuestResetDelay {
@@ -28,25 +30,18 @@ public enum QuestResetDelay {
     }
 
     public LocalDateTime nextReset() {
-
         LocalDateTime time = LocalDateTime.now();
-
-        switch (this) {
-            case DAILY -> time = time.plusDays(this.day).truncatedTo(ChronoUnit.DAYS);
+        return switch (this) {
+            case DAILY -> time.plusDays(this.day).truncatedTo(ChronoUnit.DAYS);
             case WEEKLY -> {
-                time = time.plusDays(this.day);
-
-                while (time.getDayOfWeek() != DayOfWeek.MONDAY) {
-                    time = time.minusDays(1);
+                time = time.plusDays(this.day).with(ChronoField.DAY_OF_WEEK, 1);
+                while(time.getDayOfWeek() != DayOfWeek.MONDAY) {
+                    time = time.plusDays(1);
                 }
-
-                time = time.truncatedTo(ChronoUnit.DAYS);
+                yield time.truncatedTo(ChronoUnit.DAYS);
             }
-            case MONTHLY -> time = time.plusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
-        }
-
-        time = time.plusSeconds(1);  // Just to be sure we're a doing this the right day.
-        return time;
+            case MONTHLY -> time.plusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+        };
     }
 
     public long nextResetToEpochMilli() {
